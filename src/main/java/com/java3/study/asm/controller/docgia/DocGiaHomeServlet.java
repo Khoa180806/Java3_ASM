@@ -15,8 +15,9 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@WebServlet({"/docgia"})
+@WebServlet({"/docgia", "/docgia/detail"})
 public class DocGiaHomeServlet extends HttpServlet {
     
     private final CategoryDao categoryDao = new CategoryDaoImpl();
@@ -24,6 +25,18 @@ public class DocGiaHomeServlet extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+        
+        // Xử lý yêu cầu xem chi tiết bài viết
+        if (requestURI.endsWith("/detail")) {
+            handleDetailRequest(request, response);
+        } else {
+            handleHomeRequest(request, response);
+        }
+    }
+    
+    private void handleHomeRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Lấy danh sách danh mục
         var categories = categoryDao.selectAll();
@@ -89,8 +102,74 @@ public class DocGiaHomeServlet extends HttpServlet {
         request.setAttribute("newsList", newsList);
         request.setAttribute("categoryName", categoryName);
         
-        // Forward tới trang JSP
-        request.getRequestDispatcher("/views/asm/docgiahome.jsp").forward(request, response);
+        // Sử dụng template
+        request.setAttribute("mainContent", "/views/asm/common/docgia/docgiamain.jsp");
+        request.setAttribute("pageTitle", "Trang chủ");
+        request.getRequestDispatcher("/views/asm/template.jsp").forward(request, response);
+    }
+    
+    private void handleDetailRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String newsId = request.getParameter("id");
+        if (newsId == null || newsId.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Thiếu tham số id");
+            return;
+        }
+        
+        News news = newsDao.selectById(newsId);
+        if (news == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        
+        // Tăng số lượt xem
+        news.setViewCount(news.getViewCount() + 1);
+        newsDao.update(news);
+        
+        // Lấy danh sách tin cùng chuyên mục (trừ tin hiện tại)
+        List<News> relatedNews = newsDao.selectByCategory(news.getCategoryId())
+                .stream()
+                .filter(n -> !n.getId().equals(newsId))
+                .limit(3)
+                .collect(Collectors.toList());
+        
+        // Lấy danh sách danh mục cho menu
+        var categories = categoryDao.selectAll();
+        
+        // Lấy 5 bài viết xem nhiều nhất cho sidebar
+        List<News> mostViewedNews = newsDao.selectFeaturedNews(5);
+        
+        // Lấy 5 bài viết mới nhất cho sidebar
+        List<News> latestNews = newsDao.selectLatestNews(5);
+        
+        // Lấy danh sách xem gần đây từ session
+        HttpSession session = request.getSession();
+        @SuppressWarnings("unchecked")
+        List<News> recentlyViewed = (List<News>) session.getAttribute("recentlyViewed");
+        if (recentlyViewed == null) {
+            recentlyViewed = new ArrayList<>();
+        }
+        
+        // Cập nhật danh sách xem gần đây
+        recentlyViewed.removeIf(n -> n.getId().equals(newsId));
+        recentlyViewed.add(0, news);
+        if (recentlyViewed.size() > 5) {
+            recentlyViewed = recentlyViewed.subList(0, 5);
+        }
+        session.setAttribute("recentlyViewed", recentlyViewed);
+        
+        // Đặt các thuộc tính vào request
+        request.setAttribute("categories", categories);
+        request.setAttribute("mostViewedNews", mostViewedNews);
+        request.setAttribute("latestNews", latestNews);
+        request.setAttribute("recentlyViewed", recentlyViewed);
+        request.setAttribute("news", news);
+        request.setAttribute("relatedNews", relatedNews);
+        
+        // Sử dụng template
+        request.setAttribute("pageTitle", news.getTitle() + " - Khoa News");
+        request.setAttribute("mainContent", "/views/asm/common/docgia/detail.jsp");
+        request.getRequestDispatcher("/views/asm/template.jsp").forward(request, response);
     }
 
     @Override

@@ -16,7 +16,7 @@
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card h-100 shadow-sm">
                     <c:if test="${not empty news.image}">
-                        <a href="${pageContext.request.contextPath}/docgia?id=${news.id}"
+                        <a href="${pageContext.request.contextPath}/docgia/detail?id=${news.id}"
                            class="text-decoration-none text-dark">
                             <img src="${pageContext.request.contextPath}/uploads/${news.image}"
                                  class="card-img-top"
@@ -25,7 +25,7 @@
                         </a>
                     </c:if>
                     <div class="card-body">
-                        <a href="${pageContext.request.contextPath}/docgia?id=${news.id}"
+                        <a href="${pageContext.request.contextPath}/docgia/detail?id=${news.id}"
                            class="text-decoration-none text-dark">
                             <h5 class="card-title">${news.title}</h5>
                         </a>
