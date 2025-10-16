@@ -28,10 +28,31 @@ public class DocGiaHomeServlet extends HttpServlet {
         // Lấy danh sách danh mục
         var categories = categoryDao.selectAll();
         
+        // Lấy tham số categoryId nếu có
+        String categoryId = request.getParameter("categoryId");
+        List<News> newsList;
+        String categoryName = "Tin tức mới nhất";
+        
+        // Nếu có chọn danh mục, lấy tin theo danh mục
+        if (categoryId != null && !categoryId.isEmpty()) {
+            newsList = newsDao.selectByCategory(categoryId);
+            // Lấy tên danh mục để hiển thị
+            var category = categories.stream()
+                .filter(c -> c.getId().equals(categoryId))
+                .findFirst()
+                .orElse(null);
+            if (category != null) {
+                categoryName = "Danh mục: " + category.getName();
+            }
+        } else {
+            // Nếu không chọn danh mục, lấy tất cả tin tức
+            newsList = newsDao.selectAll();
+        }
+        
         // Lấy top 5 bài viết xem nhiều nhất
         List<News> mostViewedNews = newsDao.selectFeaturedNews(5);
         
-        // Lấy 5 bài viết mới nhất
+        // Lấy 5 bài viết mới nhất cho sidebar
         List<News> latestNews = newsDao.selectLatestNews(5);
         
         // Lấy 5 bài viết xem gần đây từ session
@@ -65,6 +86,8 @@ public class DocGiaHomeServlet extends HttpServlet {
         request.setAttribute("mostViewedNews", mostViewedNews);
         request.setAttribute("latestNews", latestNews);
         request.setAttribute("recentlyViewed", recentlyViewed);
+        request.setAttribute("newsList", newsList);
+        request.setAttribute("categoryName", categoryName);
         
         // Forward tới trang JSP
         request.getRequestDispatcher("/views/asm/docgiahome.jsp").forward(request, response);
