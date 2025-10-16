@@ -18,7 +18,4 @@ public interface NewsDao {
     
     // Lấy tất cả bài viết
     List<News> selectAll();
-    
-    // Lấy danh sách bài viết theo category
-    List<News> selectByCategory(String categoryId);
 }
