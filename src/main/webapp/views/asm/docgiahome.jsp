@@ -30,23 +30,16 @@
     <jsp:include page="/views/asm/common/docgia/docgianav.jsp"/>
     
     <!-- Main Content -->
-    <div class="container main-content">
+    <div class="container mt-4">
         <div class="row">
-            <div class="col-md-8">
-                <!-- Nội dung chính sẽ được thêm vào đây -->
-                <h2>Chào mừng đến với Khoa News</h2>
-                <p>Đây là trang tin tức tổng hợp mới nhất, cập nhật liên tục 24/7.</p>
+            <!-- Main Content Area -->
+            <div class="col-md-9">
+                <jsp:include page="common/docgia/docgiamain.jsp" />
             </div>
-            <div class="col-md-4">
-                <!-- Sidebar -->
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Tin nổi bật</h5>
-                    </div>
-                    <div class="card-body">
-                        <p>Danh sách các tin tức nổi bật sẽ được hiển thị ở đây.</p>
-                    </div>
-                </div>
+            
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <jsp:include page="common/docgia/docgiasidebar.jsp" />
             </div>
         </div>
     </div>
