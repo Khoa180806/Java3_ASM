@@ -18,4 +18,13 @@ public interface NewsDao {
     
     // Lấy tất cả bài viết
     List<News> selectAll();
+
+    // Lấy tin tức theo danh mục
+    List<News> selectByCategory(String categoryId);
+
+    // Lấy 5 tin tức xem nhiều nhất
+    List<News> selectFeaturedNews(int limit);
+
+    // Lấy 5 tin tức mới nhất
+    List<News> selectLatestNews(int limit);
 }

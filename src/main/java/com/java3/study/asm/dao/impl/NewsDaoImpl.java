@@ -134,4 +134,73 @@ public class NewsDaoImpl implements NewsDao {
         stmt.setString(8, news.getCategoryId());
         stmt.setBoolean(9, news.getHome());
     }
+
+    @Override
+    public List<News> selectByCategory(String categoryId) {
+        List<News> newsList = new ArrayList<>();
+        String sql = "SELECT id, title, content, image, postedDate, author, viewCount, categoryId, home " +
+                    "FROM News WHERE categoryId = ?";
+        
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, categoryId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    News news = new News();
+                    mapResultSetToNews(rs, news);
+                    newsList.add(news);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return newsList;
+    }
+
+    @Override
+    public List<News> selectFeaturedNews(int limit) {
+        List<News> newsList = new ArrayList<>();
+        String sql = "SELECT TOP (?) id, title, content, image, postedDate, author, viewCount, categoryId, home " +
+                    "FROM News ORDER BY viewCount DESC";
+        
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, limit);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    News news = new News();
+                    mapResultSetToNews(rs, news);
+                    newsList.add(news);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return newsList;
+    }
+
+    @Override
+    public List<News> selectLatestNews(int limit) {
+        List<News> newsList = new ArrayList<>();
+        String sql = "SELECT TOP (?) id, title, content, image, postedDate, author, viewCount, categoryId, home " +
+                    "FROM News ORDER BY postedDate DESC";
+        
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, limit);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    News news = new News();
+                    mapResultSetToNews(rs, news);
+                    newsList.add(news);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return newsList;
+    }
 }
