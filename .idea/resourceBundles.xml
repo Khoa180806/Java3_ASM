@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ResourceBundleManager">
+    <file url="file://$PROJECT_DIR$/src/main/resources/language/global_en.properties" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/language/global_vi.properties" />
+    <custom-resource-bundle>
+      <file value="file://$PROJECT_DIR$/src/main/resources/language/global_en.properties" />
+      <file value="file://$PROJECT_DIR$/src/main/resources/language/global_vi.properties" />
+      <file value="file://$PROJECT_DIR$/src/main/resources/language/home_en.properties" />
+      <file value="file://$PROJECT_DIR$/src/main/resources/language/home_vi.properties" />
+      <base-name>global</base-name>
+    </custom-resource-bundle>
+  </component>
+</project>
