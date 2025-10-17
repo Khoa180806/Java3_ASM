@@ -133,4 +133,25 @@ public class UserDaoImpl implements UserDao {
         stmt.setString(7, user.getEmail());
         stmt.setBoolean(8, user.getRole());
     }
+    
+    @Override
+    public User authenticate(String id, String password) {
+        String sql = "SELECT id, password, fullname, birthday, gender, mobile, email, role FROM Users WHERE id = ? AND password = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, id);
+            stmt.setString(2, password);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    mapResultSetToUser(rs, user);
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

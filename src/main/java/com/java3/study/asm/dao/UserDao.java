@@ -18,4 +18,7 @@ public interface UserDao {
     
     // Lấy tất cả người dùng
     List<User> getAll();
+    
+    // Xác thực đăng nhập
+    User authenticate(String id, String password);
 }

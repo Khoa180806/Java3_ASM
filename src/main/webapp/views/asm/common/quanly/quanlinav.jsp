@@ -28,15 +28,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link ${param.active == 'newsletter' ? 'active' : ''}" 
+                    <a class="nav-link ${activeNav == 'newsletter' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/quanli/newsletter">
-                        <i class="fas fa-newspaper me-1"></i> Quản lý newsletter
+                        <i class="fas fa-envelope-open-text me-1"></i> Quản lý newsletter
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link ${param.active == 'user' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/quanli/user">
-                        <i class="fas fa-newspaper me-1"></i> Quản lý user
+                        <i class="fas fa-users me-1"></i> Quản lý người dùng
                     </a>
                 </li>
             </ul>
