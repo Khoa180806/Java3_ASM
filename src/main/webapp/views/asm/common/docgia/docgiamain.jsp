@@ -18,10 +18,11 @@
                     <c:if test="${not empty news.image}">
                         <a href="${pageContext.request.contextPath}/docgia/detail?id=${news.id}"
                            class="text-decoration-none text-dark">
-                            <img src="${pageContext.request.contextPath}/uploads/${news.image}"
+                            <img src="${news.image}"
                                  class="card-img-top"
                                  alt="${news.title}"
-                                 style="height: 200px; object-fit: cover;">
+                                 style="height: 200px; object-fit: cover;"
+                                 onerror="this.src='${pageContext.request.contextPath}/assets/images/no-image.jpg'; this.onerror=null;">
                         </a>
                     </c:if>
                     <div class="card-body">

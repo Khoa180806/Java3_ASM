@@ -13,7 +13,7 @@ public class NewsletterDaoImpl implements NewsletterDao {
     @Override
     public List<Newsletter> getAll() {
         List<Newsletter> newsletters = new ArrayList<>();
-        String sql = "SELECT email, enabled FROM Newsletter";
+        String sql = "SELECT email, enabled FROM Newsletters";
         
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -32,7 +32,7 @@ public class NewsletterDaoImpl implements NewsletterDao {
 
     @Override
     public Newsletter getByEmail(String email) {
-        String sql = "SELECT email, enabled FROM Newsletter WHERE email = ?";
+        String sql = "SELECT email, enabled FROM Newsletters WHERE email = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
@@ -52,7 +52,7 @@ public class NewsletterDaoImpl implements NewsletterDao {
 
     @Override
     public void insert(Newsletter newsletter) {
-        String sql = "INSERT INTO Newsletter (email, enabled) VALUES (?, ?)";
+        String sql = "INSERT INTO Newsletters (email, enabled) VALUES (?, ?)";
         
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -68,7 +68,7 @@ public class NewsletterDaoImpl implements NewsletterDao {
 
     @Override
     public void update(String email) {
-        String sql = "UPDATE Newsletter SET enabled = false WHERE email = ?";
+        String sql = "UPDATE Newsletters SET enabled = false WHERE email = ?";
         
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -83,7 +83,7 @@ public class NewsletterDaoImpl implements NewsletterDao {
 
     @Override
     public void delete(Newsletter newsletter) {
-        String sql = "DELETE FROM Newsletter WHERE email = ?";
+        String sql = "DELETE FROM Newsletters WHERE email = ?";
         
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

@@ -13,7 +13,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT id, password, fullname, birthday, gender, mobile, email, role FROM [User]";
+        String sql = "SELECT id, password, fullname, birthday, gender, mobile, email, role FROM Users";
         
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -32,7 +32,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getById(String id) {
-        String sql = "SELECT id, password, fullname, birthday, gender, mobile, email, role FROM [User] WHERE id = ?";
+        String sql = "SELECT id, password, fullname, birthday, gender, mobile, email, role FROM Users WHERE id = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
@@ -53,7 +53,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insert(User user) {
         String sql = """
-            INSERT INTO [User] (id, password, fullname, birthday, gender, mobile, email, role)
+            INSERT INTO Users (id, password, fullname, birthday, gender, mobile, email, role)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)""";
             
         try (Connection conn = DBConnect.getConnection();
@@ -70,7 +70,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(User user) {
         String sql = """
-            UPDATE [User] 
+            UPDATE Users 
             SET password = ?, fullname = ?, birthday = ?, gender = ?, 
                 mobile = ?, email = ?, role = ?
             WHERE id = ?""";
@@ -97,7 +97,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void delete(String id) {
-        String sql = "DELETE FROM [User] WHERE id = ?";
+        String sql = "DELETE FROM Users WHERE id = ?";
         
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
