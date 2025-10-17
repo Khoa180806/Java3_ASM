@@ -16,9 +16,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link ${param.active == 'news' ? 'active' : ''}" 
+                    <a class="nav-link ${param.active == 'category' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/quanli/category">
-                        <i class="fas fa-newspaper me-1"></i> Quản lý loại tin tức
+                        <i class="fas fa-tags me-1"></i> Quản lý loại tin tức
                     </a>
                 </li>
                 <li class="nav-item">
@@ -28,13 +28,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link ${param.active == 'news' ? 'active' : ''}" 
+                    <a class="nav-link ${param.active == 'newsletter' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/quanli/newsletter">
                         <i class="fas fa-newspaper me-1"></i> Quản lý newsletter
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link ${param.active == 'news' ? 'active' : ''}" 
+                    <a class="nav-link ${param.active == 'user' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/quanli/user">
                         <i class="fas fa-newspaper me-1"></i> Quản lý user
                     </a>
