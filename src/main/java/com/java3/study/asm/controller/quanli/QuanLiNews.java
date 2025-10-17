@@ -1,5 +1,5 @@
 
-package com.java3.study.asm.controller.phongvien;
+package com.java3.study.asm.controller.quanli;
 
 import com.java3.study.asm.dao.impl.NewsDaoImpl;
 import com.java3.study.asm.entity.News;
@@ -14,11 +14,24 @@ import java.sql.Date;
 import java.util.List;
 
 /**
- * Servlet xử lý CRUD tin tức cho phóng viên
- * Mapping: /phongvien/*
+ * Servlet xử lý CRUD tin tức cho quản lý
+ * 
+ * URL Mapping theo RESTful pattern:
+ * - GET  /quanli/news/          → Danh sách tin tức
+ * - GET  /quanli/news/new       → Form tạo tin tức mới
+ * - POST /quanli/news/          → Tạo tin tức mới
+ * - GET  /quanli/news/{id}      → Xem chi tiết tin tức
+ * - GET  /quanli/news/{id}/edit → Form chỉnh sửa tin tức
+ * - POST /quanli/news/{id}      → Cập nhật tin tức
+ * - GET  /quanli/news/delete?id=xxx → Xóa tin tức (legacy)
+ * 
+ * Backward compatibility:
+ * - GET  /quanli/news/create    → Redirect to /new
+ * - GET  /quanli/news/edit?id=xxx → Form chỉnh sửa (legacy)
+ * - GET  /quanli/news/view?id=xxx → Xem chi tiết (legacy)
  */
-@WebServlet("/phongvien/*")
-public class PhongVienServlet extends HttpServlet {
+@WebServlet("/quanli/news/*")
+public class QuanLiNews extends HttpServlet {
     
     private NewsDaoImpl newsDao;
     
@@ -34,25 +47,35 @@ public class PhongVienServlet extends HttpServlet {
         
         String pathInfo = request.getPathInfo();
         
-        // Xử lý các action khác nhau
+        // Xử lý các action theo RESTful pattern
         if (pathInfo == null || pathInfo.equals("/")) {
-            // Hiển thị danh sách tin tức
+            // GET /quanli/news/ → Danh sách tin tức
             showNewsList(request, response);
         } else if (pathInfo.equals("/new")) {
-            // Hiển thị form tạo tin tức mới (RESTful)
+            // GET /quanli/news/new → Form tạo tin tức mới
             showCreateForm(request, response);
         } else if (pathInfo.equals("/create")) {
             // Backward compatibility - redirect to /new
-            response.sendRedirect(request.getContextPath() + "/phongvien/new");
+            response.sendRedirect(request.getContextPath() + "/quanli/news/new");
         } else if (pathInfo.equals("/edit")) {
-            // Hiển thị form chỉnh sửa tin tức
+            // GET /quanli/news/edit?id=xxx → Form chỉnh sửa tin tức
             showEditForm(request, response);
         } else if (pathInfo.equals("/delete")) {
-            // Xóa tin tức
+            // GET /quanli/news/delete?id=xxx → Xóa tin tức (không khuyến khích)
             deleteNews(request, response);
         } else if (pathInfo.equals("/view")) {
-            // Xem chi tiết tin tức
+            // GET /quanli/news/view?id=xxx → Xem chi tiết tin tức
             viewNewsDetail(request, response);
+        } else if (pathInfo.matches("/\\w+")) {
+            // GET /quanli/news/{id} → Xem chi tiết tin tức theo ID
+            String newsId = pathInfo.substring(1); // Bỏ dấu / đầu
+            request.setAttribute("newsId", newsId);
+            viewNewsDetail(request, response);
+        } else if (pathInfo.matches("/\\w+/edit")) {
+            // GET /quanli/news/{id}/edit → Form chỉnh sửa tin tức theo ID
+            String newsId = pathInfo.substring(1, pathInfo.lastIndexOf("/edit"));
+            request.setAttribute("newsId", newsId);
+            showEditForm(request, response);
         } else {
             // Trang không tồn tại
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -66,10 +89,13 @@ public class PhongVienServlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
         
         if (pathInfo.equals("/") || pathInfo.equals("/new") || pathInfo.equals("/create")) {
-            // POST /phongvien/ hoặc /new hoặc /create → Tạo tin tức mới
+            // POST /quanli/news/ hoặc /new hoặc /create → Tạo tin tức mới
             createNews(request, response);
         } else if (pathInfo.equals("/update")) {
-            // POST /phongvien/update → Cập nhật tin tức
+            // POST /quanli/news/update → Cập nhật tin tức
+            updateNews(request, response);
+        } else if (pathInfo.matches("/\\w+")) {
+            // POST /quanli/news/{id} → Cập nhật tin tức theo ID
             updateNews(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
@@ -87,15 +113,15 @@ public class PhongVienServlet extends HttpServlet {
             request.setAttribute("newsList", newsList);
             request.setAttribute("action", "list");
             request.setAttribute("pageTitle", "Quản lý tin tức");
-            request.setAttribute("contextPath", "phongvien");
+            request.setAttribute("contextPath", "quanli/news");
             
-            request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
+            request.getRequestDispatcher("/views/asm/common/quanly/layoutquanli.jsp")
                    .forward(request, response);
                    
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Lỗi khi tải danh sách tin tức: " + e.getMessage());
-            request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
+            request.getRequestDispatcher("/views/asm/common/quanly/layoutquanli.jsp")
                    .forward(request, response);
         }
     }
@@ -108,9 +134,9 @@ public class PhongVienServlet extends HttpServlet {
         
         request.setAttribute("action", "create");
         request.setAttribute("pageTitle", "Tạo tin tức mới");
-        request.setAttribute("contextPath", "phongvien");
+        request.setAttribute("contextPath", "quanli/news");
         
-        request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
+        request.getRequestDispatcher("/views/asm/common/quanly/layoutquanli.jsp")
                .forward(request, response);
     }
     
@@ -120,10 +146,14 @@ public class PhongVienServlet extends HttpServlet {
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        String newsId = request.getParameter("id");
+        // Lấy ID từ URL path hoặc parameter
+        String newsId = (String) request.getAttribute("newsId");
+        if (newsId == null) {
+            newsId = request.getParameter("id");
+        }
         
         if (newsId == null || newsId.trim().isEmpty()) {
-            response.sendRedirect(request.getContextPath() + "/phongvien");
+            response.sendRedirect(request.getContextPath() + "/quanli/news");
             return;
         }
         
@@ -139,9 +169,9 @@ public class PhongVienServlet extends HttpServlet {
             request.setAttribute("news", news);
             request.setAttribute("action", "edit");
             request.setAttribute("pageTitle", "Chỉnh sửa tin tức");
-            request.setAttribute("contextPath", "phongvien");
+            request.setAttribute("contextPath", "quanli/news");
             
-            request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
+            request.getRequestDispatcher("/views/asm/common/quanly/layoutquanli.jsp")
                    .forward(request, response);
                    
         } catch (Exception e) {
@@ -157,10 +187,14 @@ public class PhongVienServlet extends HttpServlet {
     private void viewNewsDetail(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        String newsId = request.getParameter("id");
+        // Lấy ID từ URL path hoặc parameter
+        String newsId = (String) request.getAttribute("newsId");
+        if (newsId == null) {
+            newsId = request.getParameter("id");
+        }
         
         if (newsId == null || newsId.trim().isEmpty()) {
-            response.sendRedirect(request.getContextPath() + "/phongvien");
+            response.sendRedirect(request.getContextPath() + "/quanli/news");
             return;
         }
         
@@ -176,9 +210,9 @@ public class PhongVienServlet extends HttpServlet {
             request.setAttribute("news", news);
             request.setAttribute("action", "view");
             request.setAttribute("pageTitle", "Chi tiết tin tức");
-            request.setAttribute("contextPath", "phongvien");
+            request.setAttribute("contextPath", "quanli/news");
             
-            request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
+            request.getRequestDispatcher("/views/asm/common/quanly/layoutquanli.jsp")
                    .forward(request, response);
                    
         } catch (Exception e) {
@@ -213,8 +247,8 @@ public class PhongVienServlet extends HttpServlet {
                 request.setAttribute("errorMessage", "Vui lòng điền đầy đủ thông tin bắt buộc!");
                 request.setAttribute("action", "create");
                 request.setAttribute("pageTitle", "Tạo tin tức mới");
-                request.setAttribute("contextPath", "phongvien");
-                request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
+                request.setAttribute("contextPath", "quanli/news");
+                request.getRequestDispatcher("/views/asm/common/quanly/layoutquanli.jsp")
                        .forward(request, response);
                 return;
             }
@@ -236,22 +270,22 @@ public class PhongVienServlet extends HttpServlet {
             newsDao.insert(news);
             
             // Redirect về danh sách với thông báo thành công
-            response.sendRedirect(request.getContextPath() + "/phongvien?success=create");
+            response.sendRedirect(request.getContextPath() + "/quanli/news?success=create");
             
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "Số lượt xem phải là số nguyên!");
             request.setAttribute("action", "create");
             request.setAttribute("pageTitle", "Tạo tin tức mới");
-            request.setAttribute("contextPath", "phongvien");
-            request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
+            request.setAttribute("contextPath", "quanli/news");
+            request.getRequestDispatcher("/views/asm/common/quanly/layoutquanli.jsp")
                    .forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Lỗi khi tạo tin tức: " + e.getMessage());
             request.setAttribute("action", "create");
             request.setAttribute("pageTitle", "Tạo tin tức mới");
-            request.setAttribute("contextPath", "phongvien");
-            request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
+            request.setAttribute("contextPath", "quanli/news");
+            request.getRequestDispatcher("/views/asm/common/quanly/layoutquanli.jsp")
                    .forward(request, response);
         }
     }
@@ -308,7 +342,7 @@ public class PhongVienServlet extends HttpServlet {
             newsDao.update(news);
             
             // Redirect về danh sách với thông báo thành công
-            response.sendRedirect(request.getContextPath() + "/phongvien?success=update");
+            response.sendRedirect(request.getContextPath() + "/quanli/news?success=update");
             
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "Số lượt xem phải là số nguyên!");
@@ -329,17 +363,17 @@ public class PhongVienServlet extends HttpServlet {
         String newsId = request.getParameter("id");
         
         if (newsId == null || newsId.trim().isEmpty()) {
-            response.sendRedirect(request.getContextPath() + "/phongvien");
+            response.sendRedirect(request.getContextPath() + "/quanli/news");
             return;
         }
         
         try {
             newsDao.delete(newsId.trim());
-            response.sendRedirect(request.getContextPath() + "/phongvien?success=delete");
+            response.sendRedirect(request.getContextPath() + "/quanli/news?success=delete");
             
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/phongvien?error=delete");
+            response.sendRedirect(request.getContextPath() + "/quanli/news?error=delete");
         }
     }
 }

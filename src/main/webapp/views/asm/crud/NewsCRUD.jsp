@@ -2,6 +2,23 @@
 <%@taglib prefix="c" uri="jakarta.tags.core" %>
 <%@taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
+<%-- Sử dụng contextPath từ servlet hoặc fallback detection --%>
+<c:choose>
+    <c:when test="${not empty contextPath}">
+        <%-- Servlet đã set contextPath --%>
+        <c:set var="currentContext" value="${contextPath}" />
+    </c:when>
+    <c:otherwise>
+        <%-- Fallback: tự động phát hiện từ URL --%>
+        <c:set var="requestURI" value="${pageContext.request.requestURI}" />
+        <c:set var="currentContext" value="${requestURI.contains('/quanli/') ? 'quanli/news' : 'phongvien'}" />
+    </c:otherwise>
+</c:choose>
+
+<c:set var="baseUrl" value="${pageContext.request.contextPath}/${currentContext}" />
+
+<%-- Context detection completed --%>
+
 <!-- Main CRUD Content -->
 <div class="row">
     <div class="col-12">
@@ -23,7 +40,7 @@
                 <c:if test="${action == 'list' || empty action}">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="mb-0">Danh sách tin tức</h6>
-                        <a href="${pageContext.request.contextPath}/phongvien/create" class="btn btn-primary">
+                        <a href="${baseUrl}/new" class="btn btn-primary">
                             <i class="fas fa-plus me-1"></i> Tạo tin tức mới
                         </a>
                     </div>
@@ -89,11 +106,11 @@
                                                     </c:choose>
                                                 </td>
                                                 <td class="action-buttons">
-                                                    <a href="${pageContext.request.contextPath}/phongvien/view?id=${news.id}" 
+                                                    <a href="${baseUrl}/view?id=${news.id}" 
                                                        class="btn btn-info btn-sm" title="Xem chi tiết">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <a href="${pageContext.request.contextPath}/phongvien/edit?id=${news.id}" 
+                                                    <a href="${baseUrl}/edit?id=${news.id}" 
                                                        class="btn btn-warning btn-sm" title="Chỉnh sửa">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
@@ -113,7 +130,7 @@
                                 <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
                                 <h5 class="text-muted">Chưa có tin tức nào</h5>
                                 <p class="text-muted">Hãy tạo tin tức đầu tiên của bạn!</p>
-                                <a href="${pageContext.request.contextPath}/phongvien/create" class="btn btn-primary">
+                                <a href="${baseUrl}/new" class="btn btn-primary">
                                     <i class="fas fa-plus me-1"></i> Tạo tin tức mới
                                 </a>
                             </div>
@@ -124,7 +141,7 @@
                 <!-- Create/Edit Form -->
                 <c:if test="${action == 'create' || action == 'edit'}">
                     <form method="post" 
-                          action="${pageContext.request.contextPath}/phongvien/${action == 'edit' ? 'update' : 'create'}"
+                          action="${baseUrl}/${action == 'edit' ? 'update' : 'new'}"
                           onsubmit="return validateForm()">
                         
                         <c:if test="${action == 'edit'}">
@@ -204,7 +221,7 @@
                         </div>
                         
                         <div class="d-flex justify-content-between">
-                            <a href="${pageContext.request.contextPath}/phongvien" class="btn btn-secondary">
+                            <a href="${baseUrl}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left me-1"></i> Quay lại
                             </a>
                             <button type="submit" class="btn btn-primary">
@@ -286,11 +303,11 @@
                                     </table>
                                     
                                     <div class="d-grid gap-2">
-                                        <a href="${pageContext.request.contextPath}/phongvien/edit?id=${news.id}" 
+                                        <a href="${baseUrl}/edit?id=${news.id}" 
                                            class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit me-1"></i> Chỉnh sửa
                                         </a>
-                                        <button onclick="confirmDelete('${news.id}', '${news.title}')" 
+                                        <button onclick="confirmDelete('${news.id}', '${news.title}', '${baseUrl}')" 
                                                 class="btn btn-danger btn-sm">
                                             <i class="fas fa-trash me-1"></i> Xóa
                                         </button>
@@ -301,7 +318,7 @@
                     </div>
                     
                     <div class="mt-4">
-                        <a href="${pageContext.request.contextPath}/phongvien" class="btn btn-secondary">
+                        <a href="${baseUrl}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
                         </a>
                     </div>

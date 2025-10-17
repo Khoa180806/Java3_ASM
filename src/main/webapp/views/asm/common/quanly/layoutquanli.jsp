@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${pageTitle} - Khoa News</title>
+    <title>${pageTitle} - Khoa News Admin</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -29,18 +29,18 @@
         }
         
         .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
             border-radius: 10px 10px 0 0 !important;
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             border: none;
         }
         
         .btn-primary:hover {
-            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
             transform: translateY(-1px);
         }
         
@@ -54,8 +54,8 @@
         }
         
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
         }
         
         .news-image {
@@ -68,14 +68,23 @@
         .action-buttons .btn {
             margin: 0 2px;
         }
+        
+        .admin-badge {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <jsp:include page="phongvienheader.jsp" />
+    <jsp:include page="quanliheader.jsp" />
     
     <!-- Navigation -->
-    <jsp:include page="phongviennav.jsp" />
+    <jsp:include page="quanlinav.jsp" />
     
     <!-- Main Content -->
     <div class="container main-content">
@@ -117,7 +126,7 @@
     </div>
     
     <!-- Footer -->
-    <jsp:include page="phongvienfooter.jsp" />
+    <jsp:include page="quanlifooter.jsp" />
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -152,6 +161,31 @@
             }
             
             return true;
+        }
+        
+        // Admin specific functions
+        function bulkAction(action) {
+            var checkboxes = document.querySelectorAll('input[name="selectedNews"]:checked');
+            if (checkboxes.length === 0) {
+                alert('Vui lòng chọn ít nhất một tin tức!');
+                return;
+            }
+            
+            var ids = Array.from(checkboxes).map(cb => cb.value);
+            var message = action === 'delete' ? 'xóa' : action === 'publish' ? 'xuất bản' : 'ẩn';
+            
+            if (confirm('Bạn có chắc chắn muốn ' + message + ' ' + ids.length + ' tin tức đã chọn?')) {
+                // Implement bulk action logic here
+                console.log('Bulk ' + action + ' for IDs:', ids);
+            }
+        }
+        
+        // Toggle all checkboxes
+        function toggleAll(source) {
+            var checkboxes = document.querySelectorAll('input[name="selectedNews"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = source.checked;
+            });
         }
     </script>
 </body>
