@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,8 +22,36 @@
     </style>
 </head>
 <body>
-    <header class="header">
+    <c:set var="headerUser" value="${not empty sessionScope.currentUser ? sessionScope.currentUser : sessionScope.user}" />
+    <c:set var="headerUserName" value="${not empty headerUser.fullname ? headerUser.fullname : headerUser}" />
+    <c:set var="headerUserId" value="${not empty headerUser.id ? headerUser.id : headerUser}" />
+    <header class="bg-light border-bottom py-3 mb-4 shadow-sm">
         <div class="container">
-            <h1>Khoa News</h1>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h4 mb-0 text-primary">
+                        <i class="fas fa-book-open me-2"></i>
+                        Khoa News - Đọc giả
+                        <c:if test="${not empty headerUserName}">
+                            <span class="ms-2 text-dark">${headerUserName}</span>
+                        </c:if>
+                    </h1>
+                    <p class="mb-0 small text-muted">Thưởng thức tin tức mới nhất mỗi ngày</p>
+                </div>
+                <div class="text-end">
+                    <c:if test="${not empty headerUserId}">
+                        <div class="small mb-2 text-muted">
+                            <i class="fas fa-user me-1"></i>
+                            ${headerUserId}
+                            <span class="badge bg-primary-subtle text-primary ms-2">
+                                Đọc giả
+                            </span>
+                        </div>
+                    </c:if>
+                    <a href="${pageContext.request.contextPath}/dang-xuat" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
+                    </a>
+                </div>
+            </div>
         </div>
     </header>

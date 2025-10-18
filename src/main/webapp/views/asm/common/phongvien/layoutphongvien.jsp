@@ -153,6 +153,31 @@
             
             return true;
         }
+        
+        // Preview image before upload
+        function previewImage(input) {
+            var preview = document.getElementById('imagePreview');
+            var previewImg = document.getElementById('previewImg');
+            
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    if (previewImg) {
+                        previewImg.src = e.target.result;
+                    } else {
+                        // For edit mode, update existing image
+                        var img = preview.querySelector('img');
+                        if (img) {
+                            img.src = e.target.result;
+                        }
+                    }
+                    preview.style.display = 'block';
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
     </script>
 </body>
 </html>

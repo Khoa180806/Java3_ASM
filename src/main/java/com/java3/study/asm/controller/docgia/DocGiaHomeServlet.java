@@ -6,6 +6,7 @@ import com.java3.study.asm.dao.NewsDao;
 import com.java3.study.asm.dao.impl.CategoryDaoImpl;
 import com.java3.study.asm.dao.impl.NewsDaoImpl;
 import com.java3.study.asm.entity.News;
+import com.java3.study.asm.service.SubscriptionService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,12 +17,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
-@WebServlet({"/docgia", "/docgia/detail"})
+@WebServlet({"/docgia", "/docgia/detail", "/docgia/subscription"})
 public class DocGiaHomeServlet extends HttpServlet {
     
     private final CategoryDao categoryDao = new CategoryDaoImpl();
     private final NewsDao newsDao = new NewsDaoImpl();
+    private final SubscriptionService subscriptionService = new SubscriptionService();
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -175,6 +179,47 @@ public class DocGiaHomeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+        if (requestURI.endsWith("/subscription")) {
+            handleSubscription(request, response);
+            return;
+        }
         doGet(request, response);
+    }
+
+    private void handleSubscription(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        HttpSession session = request.getSession();
+        String email = request.getParameter("email");
+
+        // Validate email format
+        if (email == null || email.isBlank() || !EMAIL_PATTERN.matcher(email).matches()) {
+            session.setAttribute("subscriptionStatus", "error");
+            session.setAttribute("subscriptionMessage", "Vui lòng nhập email hợp lệ để nhận tin mới.");
+            response.sendRedirect(request.getContextPath() + "/docgia");
+            return;
+        }
+
+        try {
+            // Sử dụng SubscriptionService để xử lý đăng ký
+            boolean success = subscriptionService.subscribe(email);
+            
+            if (success) {
+                session.setAttribute("subscriptionStatus", "success");
+                session.setAttribute("subscriptionMessage", 
+                    "Đăng ký thành công! Chúng tôi đã gửi email xác nhận đến " + email);
+            } else {
+                session.setAttribute("subscriptionStatus", "info");
+                session.setAttribute("subscriptionMessage", 
+                    "Email này đã đăng ký nhận thông báo rồi.");
+            }
+        } catch (Exception e) {
+            session.setAttribute("subscriptionStatus", "error");
+            session.setAttribute("subscriptionMessage", 
+                "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.");
+            e.printStackTrace();
+        }
+
+        response.sendRedirect(request.getContextPath() + "/docgia");
     }
 }

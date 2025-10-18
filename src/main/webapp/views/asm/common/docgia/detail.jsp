@@ -25,7 +25,14 @@
             <!-- Hình ảnh đại diện -->
             <c:if test="${not empty news.image}">
                 <div class="mb-4">
-                    <img src="${pageContext.request.contextPath}${news.image}" alt="${news.title}" class="img-fluid rounded">
+                    <c:choose>
+                        <c:when test="${news.image.startsWith('http://') || news.image.startsWith('https://')}">
+                            <img src="${news.image}" alt="${news.title}" class="img-fluid rounded">
+                        </c:when>
+                        <c:otherwise>
+                            <img src="${pageContext.request.contextPath}/${news.image}" alt="${news.title}" class="img-fluid rounded">
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </c:if>
             
@@ -42,9 +49,18 @@
                         <div class="col-md-4 mb-3">
                             <div class="card h-100">
                                 <c:if test="${not empty related.image}">
-                                    <img src="${pageContext.request.contextPath}${related.image}" 
-                                         class="card-img-top" alt="${related.title}" 
-                                         style="height: 150px; object-fit: cover;">
+                                    <c:choose>
+                                        <c:when test="${related.image.startsWith('http://') || related.image.startsWith('https://')}">
+                                            <img src="${related.image}" 
+                                                 class="card-img-top" alt="${related.title}" 
+                                                 style="height: 150px; object-fit: cover;">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="${pageContext.request.contextPath}/${related.image}" 
+                                                 class="card-img-top" alt="${related.title}" 
+                                                 style="height: 150px; object-fit: cover;">
+                                        </c:otherwise>
+                                    </c:choose>
                                 </c:if>
                                 <div class="card-body">
                                     <h5 class="card-title">

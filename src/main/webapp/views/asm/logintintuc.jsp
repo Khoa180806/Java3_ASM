@@ -148,6 +148,13 @@
                 <i class="fas fa-sign-in-alt me-2"></i>
                 Đăng nhập
             </button>
+            
+            <div class="text-center mt-3">
+                <a href="${pageContext.request.contextPath}/docgia" class="text-decoration-none text-primary fw-semibold">
+                    <i class="fas fa-book-reader me-1"></i>
+                    Đăng nhập với vai trò độc giả
+                </a>
+            </div>
         </form>
         
         <div class="text-center mt-4">

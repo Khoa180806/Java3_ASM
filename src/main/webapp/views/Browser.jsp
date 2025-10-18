@@ -204,8 +204,7 @@
             <h3>ASM - Độc giả</h3>
             <p>Trang tin tức mẫu: danh sách và chi tiết bài viết.</p>
             <div class="links">
-                <a class="btn" href="/docgia">Trang đọc giả</a>
-                <a class="btn" href="/login-tin-tuc">Đăng nhập</a>
+                <a class="btn" href="/logintintuc">Đăng nhập</a>
             </div>
         </div>
     </div>

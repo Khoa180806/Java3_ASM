@@ -1,13 +1,19 @@
 
 package com.java3.study.asm.controller.phongvien;
 
+import com.java3.study.asm.dao.CategoryDao;
+import com.java3.study.asm.dao.impl.CategoryDaoImpl;
 import com.java3.study.asm.dao.impl.NewsDaoImpl;
 import com.java3.study.asm.entity.News;
+import com.java3.study.asm.service.SubscriptionService;
+import com.java3.study.asm.utils.FileUploadUtil;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -18,14 +24,23 @@ import java.util.List;
  * Mapping: /phongvien/*
  */
 @WebServlet("/phongvien/*")
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 2,  // 2MB
+    maxFileSize = 1024 * 1024 * 5,        // 5MB
+    maxRequestSize = 1024 * 1024 * 10     // 10MB
+)
 public class PhongVienServlet extends HttpServlet {
     
     private NewsDaoImpl newsDao;
+    private SubscriptionService subscriptionService;
+    private CategoryDao categoryDao;
     
     @Override
     public void init() throws ServletException {
         super.init();
         newsDao = new NewsDaoImpl();
+        subscriptionService = new SubscriptionService();
+        categoryDao = new CategoryDaoImpl();
     }
     
     @Override
@@ -88,6 +103,7 @@ public class PhongVienServlet extends HttpServlet {
             request.setAttribute("action", "list");
             request.setAttribute("pageTitle", "Quản lý tin tức");
             request.setAttribute("contextPath", "phongvien");
+            request.setAttribute("categories", categoryDao.selectAll());
             
             request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
                    .forward(request, response);
@@ -109,7 +125,8 @@ public class PhongVienServlet extends HttpServlet {
         request.setAttribute("action", "create");
         request.setAttribute("pageTitle", "Tạo tin tức mới");
         request.setAttribute("contextPath", "phongvien");
-        
+        request.setAttribute("categories", categoryDao.selectAll());
+
         request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
                .forward(request, response);
     }
@@ -140,6 +157,7 @@ public class PhongVienServlet extends HttpServlet {
             request.setAttribute("action", "edit");
             request.setAttribute("pageTitle", "Chỉnh sửa tin tức");
             request.setAttribute("contextPath", "phongvien");
+            request.setAttribute("categories", categoryDao.selectAll());
             
             request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
                    .forward(request, response);
@@ -199,11 +217,18 @@ public class PhongVienServlet extends HttpServlet {
             String id = request.getParameter("id");
             String title = request.getParameter("title");
             String content = request.getParameter("content");
-            String image = request.getParameter("image");
             String author = request.getParameter("author");
             String categoryId = request.getParameter("categoryId");
             String viewCountStr = request.getParameter("viewCount");
             String homeStr = request.getParameter("home");
+            
+            // Xử lý upload ảnh
+            String imagePath = null;
+            Part imagePart = request.getPart("imageFile");
+            if (imagePart != null && imagePart.getSize() > 0) {
+                String uploadPath = getServletContext().getRealPath("");
+                imagePath = FileUploadUtil.uploadImage(imagePart, uploadPath);
+            }
             
             // Validate dữ liệu
             if (id == null || id.trim().isEmpty() ||
@@ -214,6 +239,7 @@ public class PhongVienServlet extends HttpServlet {
                 request.setAttribute("action", "create");
                 request.setAttribute("pageTitle", "Tạo tin tức mới");
                 request.setAttribute("contextPath", "phongvien");
+                request.setAttribute("categories", categoryDao.selectAll());
                 request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
                        .forward(request, response);
                 return;
@@ -224,7 +250,7 @@ public class PhongVienServlet extends HttpServlet {
             news.setId(id.trim());
             news.setTitle(title.trim());
             news.setContent(content.trim());
-            news.setImage(image != null ? image.trim() : "");
+            news.setImage(imagePath != null ? imagePath : "");
             news.setPostedDate(new Date(System.currentTimeMillis()));
             news.setAuthor(author != null ? author.trim() : "");
             news.setViewCount(viewCountStr != null && !viewCountStr.trim().isEmpty() ? 
@@ -235,6 +261,19 @@ public class PhongVienServlet extends HttpServlet {
             // Lưu vào database
             newsDao.insert(news);
             
+            // Gửi thông báo email đến subscribers
+            try {
+                String newsUrl = request.getScheme() + "://" + 
+                                request.getServerName() + ":" + 
+                                request.getServerPort() + 
+                                request.getContextPath() + 
+                                "/docgia/detail?id=" + news.getId();
+                subscriptionService.notifyNewNews(news.getTitle(), newsUrl);
+            } catch (Exception emailEx) {
+                // Log lỗi nhưng không làm gián đoạn flow
+                System.err.println("Lỗi khi gửi email thông báo: " + emailEx.getMessage());
+            }
+            
             // Redirect về danh sách với thông báo thành công
             response.sendRedirect(request.getContextPath() + "/phongvien?success=create");
             
@@ -243,6 +282,7 @@ public class PhongVienServlet extends HttpServlet {
             request.setAttribute("action", "create");
             request.setAttribute("pageTitle", "Tạo tin tức mới");
             request.setAttribute("contextPath", "phongvien");
+            request.setAttribute("categories", categoryDao.selectAll());
             request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
                    .forward(request, response);
         } catch (Exception e) {
@@ -251,6 +291,7 @@ public class PhongVienServlet extends HttpServlet {
             request.setAttribute("action", "create");
             request.setAttribute("pageTitle", "Tạo tin tức mới");
             request.setAttribute("contextPath", "phongvien");
+            request.setAttribute("categories", categoryDao.selectAll());
             request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
                    .forward(request, response);
         }
@@ -267,11 +308,25 @@ public class PhongVienServlet extends HttpServlet {
             String id = request.getParameter("id");
             String title = request.getParameter("title");
             String content = request.getParameter("content");
-            String image = request.getParameter("image");
             String author = request.getParameter("author");
             String categoryId = request.getParameter("categoryId");
             String viewCountStr = request.getParameter("viewCount");
             String homeStr = request.getParameter("home");
+            String oldImage = request.getParameter("oldImage");
+            
+            // Xử lý upload ảnh mới
+            String imagePath = oldImage; // Giữ ảnh cũ nếu không upload ảnh mới
+            Part imagePart = request.getPart("imageFile");
+            if (imagePart != null && imagePart.getSize() > 0) {
+                String uploadPath = getServletContext().getRealPath("");
+                imagePath = FileUploadUtil.uploadImage(imagePart, uploadPath);
+                
+                // Xóa ảnh cũ nếu có và nó là đường dẫn local (không phải URL)
+                if (oldImage != null && !oldImage.isEmpty() && 
+                    !oldImage.startsWith("http://") && !oldImage.startsWith("https://")) {
+                    FileUploadUtil.deleteImage(oldImage, uploadPath);
+                }
+            }
             
             // Validate dữ liệu
             if (id == null || id.trim().isEmpty() ||
@@ -296,7 +351,7 @@ public class PhongVienServlet extends HttpServlet {
             news.setId(id.trim());
             news.setTitle(title.trim());
             news.setContent(content.trim());
-            news.setImage(image != null ? image.trim() : "");
+            news.setImage(imagePath != null ? imagePath : "");
             news.setPostedDate(existingNews.getPostedDate()); // Giữ nguyên ngày đăng
             news.setAuthor(author != null ? author.trim() : "");
             news.setViewCount(viewCountStr != null && !viewCountStr.trim().isEmpty() ? 

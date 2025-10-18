@@ -53,9 +53,11 @@ public class LoginTinTuc extends HttpServlet {
                 // Đăng nhập thành công - Lưu thông tin vào session
                 HttpSession session = request.getSession();
                 session.setAttribute("currentUser", user);
+                session.setAttribute("user", user);
                 session.setAttribute("userId", user.getId());
                 session.setAttribute("fullname", user.getFullname());
                 session.setAttribute("role", user.getRole());
+                session.setAttribute("roleName", user.getRole() ? "Quản trị viên" : "Phóng viên");
                 
                 // Phân quyền theo vai trò
                 if (user.getRole()) {

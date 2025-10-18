@@ -3,6 +3,32 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div class="container mt-4">
+    <!-- Thông báo đăng ký subscription -->
+    <c:if test="${not empty sessionScope.subscriptionStatus}">
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="alert alert-${sessionScope.subscriptionStatus == 'success' ? 'success' : sessionScope.subscriptionStatus == 'error' ? 'danger' : 'info'} alert-dismissible fade show" role="alert">
+                    <c:choose>
+                        <c:when test="${sessionScope.subscriptionStatus == 'success'}">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                        </c:when>
+                        <c:when test="${sessionScope.subscriptionStatus == 'error'}">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                        </c:otherwise>
+                    </c:choose>
+                    <strong>${sessionScope.subscriptionMessage}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        <%-- Xóa message sau khi hiển thị --%>
+        <c:remove var="subscriptionStatus" scope="session"/>
+        <c:remove var="subscriptionMessage" scope="session"/>
+    </c:if>
+
     <!-- Tiêu đề danh mục -->
     <div class="row mb-4">
         <div class="col-12">
@@ -18,11 +44,22 @@
                     <c:if test="${not empty news.image}">
                         <a href="${pageContext.request.contextPath}/docgia/detail?id=${news.id}"
                            class="text-decoration-none text-dark">
-                            <img src="${news.image}"
-                                 class="card-img-top"
-                                 alt="${news.title}"
-                                 style="height: 200px; object-fit: cover;"
-                                 onerror="this.src='${pageContext.request.contextPath}/assets/images/no-image.jpg'; this.onerror=null;">
+                            <c:choose>
+                                <c:when test="${news.image.startsWith('http://') || news.image.startsWith('https://')}">
+                                    <img src="${news.image}"
+                                         class="card-img-top"
+                                         alt="${news.title}"
+                                         style="height: 200px; object-fit: cover;"
+                                         onerror="this.src='${pageContext.request.contextPath}/assets/images/no-image.jpg'; this.onerror=null;">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/${news.image}"
+                                         class="card-img-top"
+                                         alt="${news.title}"
+                                         style="height: 200px; object-fit: cover;"
+                                         onerror="this.src='${pageContext.request.contextPath}/assets/images/no-image.jpg'; this.onerror=null;">
+                                </c:otherwise>
+                            </c:choose>
                         </a>
                     </c:if>
                     <div class="card-body">

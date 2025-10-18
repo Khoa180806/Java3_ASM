@@ -68,7 +68,14 @@
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${not empty news.image}">
-                                                            <img src="${news.image}" alt="News Image" class="news-image">
+                                                            <c:choose>
+                                                                <c:when test="${news.image.startsWith('http://') || news.image.startsWith('https://')}">
+                                                                    <img src="${news.image}" alt="News Image" class="news-image">
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <img src="${pageContext.request.contextPath}/${news.image}" alt="News Image" class="news-image">
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <div class="bg-light d-flex align-items-center justify-content-center news-image">
@@ -114,7 +121,7 @@
                                                        class="btn btn-warning btn-sm" title="Chỉnh sửa">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <button onclick="confirmDelete('${news.id}', '${news.title}')" 
+                                                    <button onclick="confirmDelete('${news.id}', '${news.title}', '${baseUrl}')" 
                                                             class="btn btn-danger btn-sm" title="Xóa">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
@@ -142,6 +149,7 @@
                 <c:if test="${action == 'create' || action == 'edit'}">
                     <form method="post" 
                           action="${baseUrl}/${action == 'edit' ? 'update' : 'new'}"
+                          enctype="multipart/form-data"
                           onsubmit="return validateForm()">
                         
                         <c:if test="${action == 'edit'}">
@@ -161,8 +169,14 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="categoryId" class="form-label">Danh mục</label>
-                                    <input type="text" class="form-control" id="categoryId" name="categoryId" 
-                                           value="${news.categoryId}" placeholder="VD: thoi-su, the-gioi, kinh-te">
+                                    <select class="form-select" id="categoryId" name="categoryId">
+                                        <option value="">-- Chọn danh mục --</option>
+                                        <c:forEach var="category" items="${categories}">
+                                            <option value="${category.id}" ${news.categoryId == category.id ? 'selected' : ''}>
+                                                ${category.name}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -185,9 +199,46 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="newsImage" class="form-label">URL hình ảnh</label>
-                                    <input type="url" class="form-control" id="newsImage" name="image" 
-                                           value="${news.image}" placeholder="https://example.com/image.jpg">
+                                    <label for="newsImage" class="form-label">Hình ảnh</label>
+                                    <input type="file" class="form-control" id="newsImage" name="imageFile" 
+                                           accept="image/*" onchange="previewImage(this)">
+                                    <small class="text-muted">Chấp nhận: JPG, PNG, GIF, WEBP (Tối đa 5MB)</small>
+                                    
+                                    <%-- Hidden field để giữ đường dẫn ảnh cũ khi edit --%>
+                                    <c:if test="${action == 'edit' && not empty news.image}">
+                                        <input type="hidden" name="oldImage" value="${news.image}">
+                                    </c:if>
+                                </div>
+                                
+                                <%-- Preview ảnh --%>
+                                <div class="mb-3">
+                                    <c:if test="${action == 'edit' && not empty news.image}">
+                                        <div id="imagePreview">
+                                            <p class="text-muted mb-2">Ảnh hiện tại:</p>
+                                            <c:choose>
+                                                <c:when test="${news.image.startsWith('http://') || news.image.startsWith('https://')}">
+                                                    <img src="${news.image}" 
+                                                         alt="Current image" 
+                                                         class="img-thumbnail" 
+                                                         style="max-width: 300px; max-height: 200px;">
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <img src="${pageContext.request.contextPath}/${news.image}" 
+                                                         alt="Current image" 
+                                                         class="img-thumbnail" 
+                                                         style="max-width: 300px; max-height: 200px;">
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${action == 'create'}">
+                                        <div id="imagePreview" style="display: none;">
+                                            <p class="text-muted mb-2">Xem trước:</p>
+                                            <img id="previewImg" src="" alt="Preview" 
+                                                 class="img-thumbnail" 
+                                                 style="max-width: 300px; max-height: 200px;">
+                                        </div>
+                                    </c:if>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -249,7 +300,14 @@
                             
                             <c:if test="${not empty news.image}">
                                 <div class="mb-4">
-                                    <img src="${news.image}" alt="${news.title}" class="img-fluid rounded">
+                                    <c:choose>
+                                        <c:when test="${news.image.startsWith('http://') || news.image.startsWith('https://')}">
+                                            <img src="${news.image}" alt="${news.title}" class="img-fluid rounded">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="${pageContext.request.contextPath}/${news.image}" alt="${news.title}" class="img-fluid rounded">
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </c:if>
                             
