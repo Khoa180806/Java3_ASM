@@ -12,13 +12,13 @@
                 <li class="nav-item">
                     <a class="nav-link ${param.active == 'home' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/docgia">
-                        <i class="fas fa-home me-1"></i> Trang chủ
+                        <i class="fas fa-home me-1"></i> ${i18n_home}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link ${param.active == 'news' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/phongvien">
-                        <i class="fas fa-newspaper me-1"></i> Quản lý tin tức
+                        <i class="fas fa-newspaper me-1"></i> ${i18n_manageNews}
                     </a>
                 </li>
             </ul>

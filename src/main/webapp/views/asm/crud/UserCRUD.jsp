@@ -27,10 +27,10 @@
                 <h5 class="card-title mb-0">
                     <i class="fas fa-users me-2"></i>
                     <c:choose>
-                        <c:when test="${action == 'create'}">Tạo người dùng mới</c:when>
-                        <c:when test="${action == 'edit'}">Chỉnh sửa người dùng</c:when>
-                        <c:when test="${action == 'view'}">Chi tiết người dùng</c:when>
-                        <c:otherwise>Quản lý người dùng</c:otherwise>
+                        <c:when test="${action == 'create'}">${i18n_userAdd}</c:when>
+                        <c:when test="${action == 'edit'}">${i18n_userEdit}</c:when>
+                        <c:when test="${action == 'view'}">${i18n_userView}</c:when>
+                        <c:otherwise>${i18n_userManage}</c:otherwise>
                     </c:choose>
                 </h5>
             </div>
@@ -53,12 +53,12 @@
                                         <tr>
                                             <th>Avatar</th>
                                             <th>ID</th>
-                                            <th>Họ tên</th>
-                                            <th>Email</th>
-                                            <th>Giới tính</th>
-                                            <th>Ngày sinh</th>
-                                            <th>Vai trò</th>
-                                            <th>Thao tác</th>
+                                            <th>${i18n_userFullname}</th>
+                                            <th>${i18n_userEmail}</th>
+                                            <th>${i18n_userGender}</th>
+                                            <th>${i18n_userBirthday}</th>
+                                            <th>${i18n_userRole}</th>
+                                            <th>${i18n_tableActions}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -78,12 +78,12 @@
                                                     <c:choose>
                                                         <c:when test="${user.gender}">
                                                             <span class="gender-badge gender-male">
-                                                                <i class="fas fa-mars"></i> Nam
+                                                                <i class="fas fa-mars"></i> ${i18n_userMale}
                                                             </span>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <span class="gender-badge gender-female">
-                                                                <i class="fas fa-venus"></i> Nữ
+                                                                <i class="fas fa-venus"></i> ${i18n_userFemale}
                                                             </span>
                                                         </c:otherwise>
                                                     </c:choose>
@@ -111,7 +111,7 @@
                                                     <a href="${baseUrl}/view?id=${user.id}" class="btn btn-info btn-sm" title="Xem chi tiết">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <a href="${baseUrl}/edit?id=${user.id}" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                                                    <a href="${baseUrl}/edit?id=${user.id}" class="btn btn-warning btn-sm" title="${i18n_actionEdit}">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <button onclick="confirmDelete('${user.id}', '${user.fullname}', '${baseUrl}')" 
@@ -128,10 +128,10 @@
                         <c:otherwise>
                             <div class="text-center py-5">
                                 <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                                <h5 class="text-muted">Chưa có người dùng nào</h5>
-                                <p class="text-muted">Hãy tạo người dùng đầu tiên của bạn!</p>
+                                <h5 class="text-muted">${i18n_emptyUserTitle}</h5>
+                                <p class="text-muted">${i18n_emptyUserDescription}</p>
                                 <a href="${baseUrl}/new" class="btn btn-primary">
-                                    <i class="fas fa-plus me-1"></i> Tạo người dùng mới
+                                    <i class="fas fa-plus me-1"></i> ${i18n_emptyUserAction}
                                 </a>
                             </div>
                         </c:otherwise>
@@ -152,7 +152,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="userPassword" class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+                                    <label for="userPassword" class="form-label">${i18n_userPassword} <span class="text-danger">*</span></label>
                                     <input type="password" class="form-control" id="userPassword" name="password" 
                                            value="${user.password}" required>
                                 </div>
@@ -162,14 +162,14 @@
                         <div class="row">
                             <div class="col-md-8">
                                 <div class="mb-3">
-                                    <label for="userFullname" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                    <label for="userFullname" class="form-label">${i18n_userFullname} <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="userFullname" name="fullname" 
                                            value="${user.fullname}" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="userBirthday" class="form-label">Ngày sinh</label>
+                                    <label for="userBirthday" class="form-label">${i18n_userBirthday}</label>
                                     <input type="date" class="form-control" id="userBirthday" name="birthday" 
                                            value="${user.birthday}">
                                 </div>
@@ -179,14 +179,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="userEmail" class="form-label">Email <span class="text-danger">*</span></label>
+                                    <label for="userEmail" class="form-label">${i18n_userEmail} <span class="text-danger">*</span></label>
                                     <input type="email" class="form-control" id="userEmail" name="email" 
                                            value="${user.email}" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="userMobile" class="form-label">Số điện thoại</label>
+                                    <label for="userMobile" class="form-label">${i18n_userPhone}</label>
                                     <input type="tel" class="form-control" id="userMobile" name="mobile" 
                                            value="${user.mobile}">
                                 </div>
@@ -196,20 +196,20 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Giới tính</label>
+                                    <label class="form-label">${i18n_userGender}</label>
                                     <div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="gender" id="genderMale" 
                                                    value="true" ${user.gender ? 'checked' : ''}>
                                             <label class="form-check-label" for="genderMale">
-                                                <i class="fas fa-mars text-primary"></i> Nam
+                                                <i class="fas fa-mars text-primary"></i> ${i18n_userMale}
                                             </label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="gender" id="genderFemale" 
                                                    value="false" ${!user.gender && user.gender != null ? 'checked' : ''}>
                                             <label class="form-check-label" for="genderFemale">
-                                                <i class="fas fa-venus text-danger"></i> Nữ
+                                                <i class="fas fa-venus text-danger"></i> ${i18n_userFemale}
                                             </label>
                                         </div>
                                     </div>
@@ -217,7 +217,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Vai trò</label>
+                                    <label class="form-label">${i18n_userRole}</label>
                                     <div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="role" id="roleAdmin" 

@@ -20,15 +20,15 @@
                 <h5 class="mb-0">
                     <i class="fas fa-tags me-2"></i>
                     <c:choose>
-                        <c:when test="${action == 'new'}">Thêm Danh mục mới</c:when>
-                        <c:when test="${action == 'edit'}">Chỉnh sửa Danh mục</c:when>
-                        <c:when test="${action == 'view'}">Chi tiết Danh mục</c:when>
-                        <c:otherwise>Quản lý Danh mục</c:otherwise>
+                        <c:when test="${action == 'new'}">${i18n_categoryAdd}</c:when>
+                        <c:when test="${action == 'edit'}">${i18n_categoryEdit}</c:when>
+                        <c:when test="${action == 'view'}">${i18n_categoryView}</c:when>
+                        <c:otherwise>${i18n_categoryManage}</c:otherwise>
                     </c:choose>
                 </h5>
                 <c:if test="${action == 'list'}">
                     <a href="${baseUrl}/new" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i>Thêm mới
+                        <i class="fas fa-plus me-1"></i>${i18n_buttonCreate}
                     </a>
                 </c:if>
             </div>
@@ -41,7 +41,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="categoryId" class="form-label">
-                                        ID Danh mục <span class="text-danger">*</span>
+                                        ${i18n_categoryId} <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" 
                                            class="form-control" 
@@ -58,7 +58,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="categoryName" class="form-label">
-                                        Tên Danh mục <span class="text-danger">*</span>
+                                        ${i18n_categoryName} <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" 
                                            class="form-control" 
@@ -74,10 +74,10 @@
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-1"></i>
-                                ${action == 'edit' ? 'Cập nhật' : 'Thêm mới'}
+                                ${action == 'edit' ? i18n_buttonUpdate : i18n_buttonCreate}
                             </button>
                             <a href="${baseUrl}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-1"></i>Quay lại
+                                <i class="fas fa-arrow-left me-1"></i>${i18n_buttonBackShort}
                             </a>
                         </div>
                     </form>
@@ -88,14 +88,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">ID Danh mục:</label>
+                                <label class="form-label fw-bold">${i18n_categoryId}:</label>
                                 <p class="form-control-plaintext">${category.id}</p>
                             </div>
                         </div>
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Tên Danh mục:</label>
+                                <label class="form-label fw-bold">${i18n_categoryName}:</label>
                                 <p class="form-control-plaintext">${category.name}</p>
                             </div>
                         </div>
@@ -103,7 +103,7 @@
                     
                     <div class="d-flex gap-2">
                         <a href="${baseUrl}/edit?id=${category.id}" class="btn btn-warning">
-                            <i class="fas fa-edit me-1"></i>Chỉnh sửa
+                            <i class="fas fa-edit me-1"></i>${i18n_actionEdit}
                         </a>
                         <a href="${baseUrl}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i>Quay lại
@@ -120,9 +120,9 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">#</th>
-                                            <th style="width: 20%">ID Danh mục</th>
-                                            <th style="width: 45%">Tên Danh mục</th>
-                                            <th style="width: 30%" class="text-center">Thao tác</th>
+                                            <th style="width: 20%">${i18n_categoryId}</th>
+                                            <th style="width: 45%">${i18n_categoryName}</th>
+                                            <th style="width: 30%" class="text-center">${i18n_tableActions}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -144,7 +144,7 @@
                                                         </a>
                                                         <a href="${baseUrl}/edit?id=${category.id}" 
                                                            class="btn btn-sm btn-warning" 
-                                                           title="Chỉnh sửa">
+                                                           title="${i18n_actionEdit}">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
                                                         <button type="button" 
@@ -172,10 +172,10 @@
                         <c:otherwise>
                             <div class="text-center py-5">
                                 <i class="fas fa-tags fa-3x text-muted mb-3"></i>
-                                <h5 class="text-muted">Chưa có danh mục nào</h5>
-                                <p class="text-muted">Hãy thêm danh mục đầu tiên để bắt đầu quản lý tin tức</p>
+                                <h5 class="text-muted">${i18n_emptyCategoryTitle}</h5>
+                                <p class="text-muted">${i18n_emptyCategoryDescription}</p>
                                 <a href="${baseUrl}/new" class="btn btn-primary">
-                                    <i class="fas fa-plus me-1"></i>Thêm danh mục đầu tiên
+                                    <i class="fas fa-plus me-1"></i>${i18n_emptyCategoryAction}
                                 </a>
                             </div>
                         </c:otherwise>

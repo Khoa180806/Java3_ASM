@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div class="container mt-4">
@@ -71,7 +71,7 @@
                             <i class="bi bi-calendar3"></i>
                             <fmt:formatDate value="${news.postedDate}" pattern="dd/MM/yyyy" />
                             <span class="ms-2">
-                                <i class="bi bi-eye"></i> ${news.viewCount} lượt xem
+                                <i class="bi bi-eye"></i> ${news.viewCount} ${i18n_newsViewCount}
                             </span>
                         </p>
                         <p class="card-text">${news.content.length() > 100 ? news.content.substring(0, 100) : news.content}...</p>

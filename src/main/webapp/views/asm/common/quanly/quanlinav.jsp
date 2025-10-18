@@ -12,31 +12,31 @@
                 <li class="nav-item">
                     <a class="nav-link ${param.active == 'home' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/docgia">
-                        <i class="fas fa-home me-1"></i> Trang chủ
+                        <i class="fas fa-home me-1"></i> ${i18n_home}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link ${param.active == 'category' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/quanli/category">
-                        <i class="fas fa-tags me-1"></i> Quản lý loại tin tức
+                        <i class="fas fa-tags me-1"></i> ${i18n_manageCategories}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link ${param.active == 'news' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/quanli/news">
-                        <i class="fas fa-newspaper me-1"></i> Quản lý tin tức
+                        <i class="fas fa-newspaper me-1"></i> ${i18n_manageNews}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link ${activeNav == 'newsletter' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/quanli/newsletter">
-                        <i class="fas fa-envelope-open-text me-1"></i> Quản lý newsletter
+                        <i class="fas fa-envelope-open-text me-1"></i> ${i18n_manageNewsletter}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link ${param.active == 'user' ? 'active' : ''}" 
                        href="${pageContext.request.contextPath}/quanli/user">
-                        <i class="fas fa-users me-1"></i> Quản lý người dùng
+                        <i class="fas fa-users me-1"></i> ${i18n_manageUsers}
                     </a>
                 </li>
             </ul>

@@ -7,6 +7,7 @@ import com.java3.study.asm.dao.impl.CategoryDaoImpl;
 import com.java3.study.asm.dao.impl.NewsDaoImpl;
 import com.java3.study.asm.entity.News;
 import com.java3.study.asm.service.SubscriptionService;
+import com.java3.study.asm.utils.I18nUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -48,7 +49,7 @@ public class DocGiaHomeServlet extends HttpServlet {
         // Lấy tham số categoryId nếu có
         String categoryId = request.getParameter("categoryId");
         List<News> newsList;
-        String categoryName = "Tin tức mới nhất";
+        String categoryName = I18nUtils.getMessage(request, "nav.latest.news");
         
         // Nếu có chọn danh mục, lấy tin theo danh mục
         if (categoryId != null && !categoryId.isEmpty()) {
@@ -59,7 +60,7 @@ public class DocGiaHomeServlet extends HttpServlet {
                 .findFirst()
                 .orElse(null);
             if (category != null) {
-                categoryName = "Danh mục: " + category.getName();
+                categoryName = I18nUtils.getMessage(request, "news.category") + ": " + category.getName();
             }
         } else {
             // Nếu không chọn danh mục, lấy tất cả tin tức
@@ -108,7 +109,15 @@ public class DocGiaHomeServlet extends HttpServlet {
         
         // Sử dụng template
         request.setAttribute("mainContent", "/views/asm/common/docgia/docgiamain.jsp");
-        request.setAttribute("pageTitle", "Trang chủ");
+        request.setAttribute("pageTitle", I18nUtils.getMessage(request, "common.home") + " - " + I18nUtils.getMessage(request, "app.name"));
+        
+        // Set original servlet URL for language switcher
+        String originalUrl = request.getContextPath() + "/docgia";
+        if (categoryId != null && !categoryId.isEmpty()) {
+            originalUrl += "?categoryId=" + categoryId;
+        }
+        request.setAttribute("originalUrl", originalUrl);
+        
         request.getRequestDispatcher("/views/asm/template.jsp").forward(request, response);
     }
     
@@ -116,7 +125,7 @@ public class DocGiaHomeServlet extends HttpServlet {
             throws ServletException, IOException {
         String newsId = request.getParameter("id");
         if (newsId == null || newsId.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Thiếu tham số id");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, I18nUtils.getMessage(request, "message.missing.parameter"));
             return;
         }
         
@@ -171,8 +180,13 @@ public class DocGiaHomeServlet extends HttpServlet {
         request.setAttribute("relatedNews", relatedNews);
         
         // Sử dụng template
-        request.setAttribute("pageTitle", news.getTitle() + " - Khoa News");
+        request.setAttribute("pageTitle", news.getTitle() + " - " + I18nUtils.getMessage(request, "app.name"));
         request.setAttribute("mainContent", "/views/asm/common/docgia/detail.jsp");
+        
+        // Set original servlet URL for language switcher
+        String originalUrl = request.getContextPath() + "/docgia/detail?id=" + newsId;
+        request.setAttribute("originalUrl", originalUrl);
+        
         request.getRequestDispatcher("/views/asm/template.jsp").forward(request, response);
     }
 
@@ -195,7 +209,7 @@ public class DocGiaHomeServlet extends HttpServlet {
         // Validate email format
         if (email == null || email.isBlank() || !EMAIL_PATTERN.matcher(email).matches()) {
             session.setAttribute("subscriptionStatus", "error");
-            session.setAttribute("subscriptionMessage", "Vui lòng nhập email hợp lệ để nhận tin mới.");
+            session.setAttribute("subscriptionMessage", I18nUtils.getMessage(request, "form.email.invalid"));
             response.sendRedirect(request.getContextPath() + "/docgia");
             return;
         }
@@ -206,17 +220,14 @@ public class DocGiaHomeServlet extends HttpServlet {
             
             if (success) {
                 session.setAttribute("subscriptionStatus", "success");
-                session.setAttribute("subscriptionMessage", 
-                    "Đăng ký thành công! Chúng tôi đã gửi email xác nhận đến " + email);
+                session.setAttribute("subscriptionMessage", I18nUtils.getMessage(request, "subscription.success"));
             } else {
                 session.setAttribute("subscriptionStatus", "info");
-                session.setAttribute("subscriptionMessage", 
-                    "Email này đã đăng ký nhận thông báo rồi.");
+                session.setAttribute("subscriptionMessage", I18nUtils.getMessage(request, "subscription.already.exists"));
             }
         } catch (Exception e) {
             session.setAttribute("subscriptionStatus", "error");
-            session.setAttribute("subscriptionMessage", 
-                "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.");
+            session.setAttribute("subscriptionMessage", I18nUtils.getMessage(request, "subscription.error"));
             e.printStackTrace();
         }
 

@@ -27,10 +27,10 @@
                 <h5 class="card-title mb-0">
                     <i class="fas fa-newspaper me-2"></i>
                     <c:choose>
-                        <c:when test="${action == 'create'}">Tạo tin tức mới</c:when>
-                        <c:when test="${action == 'edit'}">Chỉnh sửa tin tức</c:when>
-                        <c:when test="${action == 'view'}">Chi tiết tin tức</c:when>
-                        <c:otherwise>Quản lý tin tức</c:otherwise>
+                        <c:when test="${action == 'create'}">${i18n_pageCreateNews}</c:when>
+                        <c:when test="${action == 'edit'}">${i18n_pageEditNews}</c:when>
+                        <c:when test="${action == 'view'}">${i18n_pageViewNews}</c:when>
+                        <c:otherwise>${i18n_pageNewsList}</c:otherwise>
                     </c:choose>
                 </h5>
             </div>
@@ -39,9 +39,9 @@
                 <!-- List View -->
                 <c:if test="${action == 'list' || empty action}">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="mb-0">Danh sách tin tức</h6>
+                        <h6 class="mb-0">${i18n_pageNewsList}</h6>
                         <a href="${baseUrl}/new" class="btn btn-primary">
-                            <i class="fas fa-plus me-1"></i> Tạo tin tức mới
+                            <i class="fas fa-plus me-1"></i> ${i18n_pageCreateNews}
                         </a>
                     </div>
                     
@@ -51,14 +51,14 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Hình ảnh</th>
-                                            <th>Tiêu đề</th>
-                                            <th>Tác giả</th>
-                                            <th>Ngày đăng</th>
-                                            <th>Lượt xem</th>
-                                            <th>Trang nhất</th>
-                                            <th>Thao tác</th>
+                                            <th>${i18n_tableId}</th>
+                                            <th>${i18n_tableImage}</th>
+                                            <th>${i18n_tableTitle}</th>
+                                            <th>${i18n_tableAuthor}</th>
+                                            <th>${i18n_tablePostedDate}</th>
+                                            <th>${i18n_tableViewCount}</th>
+                                            <th>${i18n_tableFeatured}</th>
+                                            <th>${i18n_tableActions}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -102,27 +102,27 @@
                                                     <c:choose>
                                                         <c:when test="${news.home}">
                                                             <span class="badge bg-success">
-                                                                <i class="fas fa-check"></i> Có
+                                                                <i class="fas fa-check"></i> ${i18n_actionYes}
                                                             </span>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <span class="badge bg-secondary">
-                                                                <i class="fas fa-times"></i> Không
+                                                                <i class="fas fa-times"></i> ${i18n_actionNo}
                                                             </span>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </td>
                                                 <td class="action-buttons">
                                                     <a href="${baseUrl}/view?id=${news.id}" 
-                                                       class="btn btn-info btn-sm" title="Xem chi tiết">
+                                                       class="btn btn-info btn-sm" title="${i18n_actionView}">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     <a href="${baseUrl}/edit?id=${news.id}" 
-                                                       class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                                                       class="btn btn-warning btn-sm" title="${i18n_actionEdit}">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <button onclick="confirmDelete('${news.id}', '${news.title}', '${baseUrl}')" 
-                                                            class="btn btn-danger btn-sm" title="Xóa">
+                                                            class="btn btn-danger btn-sm" title="${i18n_actionDelete}">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </td>
@@ -135,10 +135,10 @@
                         <c:otherwise>
                             <div class="text-center py-5">
                                 <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
-                                <h5 class="text-muted">Chưa có tin tức nào</h5>
-                                <p class="text-muted">Hãy tạo tin tức đầu tiên của bạn!</p>
+                                <h5 class="text-muted">${i18n_emptyNewsTitle}</h5>
+                                <p class="text-muted">${i18n_emptyNewsDescription}</p>
                                 <a href="${baseUrl}/new" class="btn btn-primary">
-                                    <i class="fas fa-plus me-1"></i> Tạo tin tức mới
+                                    <i class="fas fa-plus me-1"></i> ${i18n_emptyNewsAction}
                                 </a>
                             </div>
                         </c:otherwise>
@@ -160,7 +160,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="newsId" class="form-label">
-                                        ID tin tức <span class="text-danger">*</span>
+                                        ${i18n_formId} <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" id="newsId" name="id" 
                                            value="${news.id}" ${action == 'edit' ? 'readonly' : ''} required>
@@ -168,9 +168,9 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="categoryId" class="form-label">Danh mục</label>
+                                    <label for="categoryId" class="form-label">${i18n_formCategory}</label>
                                     <select class="form-select" id="categoryId" name="categoryId">
-                                        <option value="">-- Chọn danh mục --</option>
+                                        <option value="">${i18n_formSelectCategory}</option>
                                         <c:forEach var="category" items="${categories}">
                                             <option value="${category.id}" ${news.categoryId == category.id ? 'selected' : ''}>
                                                 ${category.name}
@@ -183,7 +183,7 @@
                         
                         <div class="mb-3">
                             <label for="newsTitle" class="form-label">
-                                Tiêu đề <span class="text-danger">*</span>
+                                ${i18n_formTitle} <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" id="newsTitle" name="title" 
                                    value="${news.title}" required>
@@ -191,7 +191,7 @@
                         
                         <div class="mb-3">
                             <label for="newsContent" class="form-label">
-                                Nội dung <span class="text-danger">*</span>
+                                ${i18n_formContent} <span class="text-danger">*</span>
                             </label>
                             <textarea class="form-control" id="newsContent" name="content" rows="8" required>${news.content}</textarea>
                         </div>
@@ -199,10 +199,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="newsImage" class="form-label">Hình ảnh</label>
+                                    <label for="newsImage" class="form-label">${i18n_formImage}</label>
                                     <input type="file" class="form-control" id="newsImage" name="imageFile" 
                                            accept="image/*" onchange="previewImage(this)">
-                                    <small class="text-muted">Chấp nhận: JPG, PNG, GIF, WEBP (Tối đa 5MB)</small>
+                                    <small class="text-muted">${i18n_fileAcceptHint}</small>
                                     
                                     <%-- Hidden field để giữ đường dẫn ảnh cũ khi edit --%>
                                     <c:if test="${action == 'edit' && not empty news.image}">
@@ -214,7 +214,7 @@
                                 <div class="mb-3">
                                     <c:if test="${action == 'edit' && not empty news.image}">
                                         <div id="imagePreview">
-                                            <p class="text-muted mb-2">Ảnh hiện tại:</p>
+                                            <p class="text-muted mb-2">${i18n_fileCurrentImage}:</p>
                                             <c:choose>
                                                 <c:when test="${news.image.startsWith('http://') || news.image.startsWith('https://')}">
                                                     <img src="${news.image}" 
@@ -233,7 +233,7 @@
                                     </c:if>
                                     <c:if test="${action == 'create'}">
                                         <div id="imagePreview" style="display: none;">
-                                            <p class="text-muted mb-2">Xem trước:</p>
+                                            <p class="text-muted mb-2">${i18n_filePreview}:</p>
                                             <img id="previewImg" src="" alt="Preview" 
                                                  class="img-thumbnail" 
                                                  style="max-width: 300px; max-height: 200px;">
@@ -243,7 +243,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="newsAuthor" class="form-label">Tác giả</label>
+                                    <label for="newsAuthor" class="form-label">${i18n_formAuthor}</label>
                                     <input type="text" class="form-control" id="newsAuthor" name="author" 
                                            value="${news.author}">
                                 </div>
@@ -253,7 +253,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="viewCount" class="form-label">Lượt xem</label>
+                                    <label for="viewCount" class="form-label">${i18n_formViewCount}</label>
                                     <input type="number" class="form-control" id="viewCount" name="viewCount" 
                                            value="${news.viewCount}" min="0">
                                 </div>
@@ -264,7 +264,7 @@
                                         <input class="form-check-input" type="checkbox" id="newsHome" name="home" 
                                                ${news.home ? 'checked' : ''}>
                                         <label class="form-check-label" for="newsHome">
-                                            Hiển thị trên trang nhất
+                                            ${i18n_formFeatured}
                                         </label>
                                     </div>
                                 </div>
@@ -273,11 +273,11 @@
                         
                         <div class="d-flex justify-content-between">
                             <a href="${baseUrl}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-1"></i> Quay lại
+                                <i class="fas fa-arrow-left me-1"></i> ${i18n_buttonBackShort}
                             </a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-1"></i> 
-                                ${action == 'edit' ? 'Cập nhật' : 'Tạo mới'}
+                                ${action == 'edit' ? i18n_buttonUpdate : i18n_buttonCreate}
                             </button>
                         </div>
                     </form>
@@ -319,41 +319,45 @@
                         <div class="col-md-4">
                             <div class="card">
                                 <div class="card-header">
-                                    <h6 class="mb-0">Thông tin tin tức</h6>
+                                    <h6 class="mb-0">${i18n_pageViewNews}</h6>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-sm">
                                         <tr>
-                                            <td><strong>ID:</strong></td>
+                                            <td><strong>${i18n_tableId}:</strong></td>
                                             <td>${news.id}</td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Danh mục:</strong></td>
+                                            <td><strong>${i18n_tableTitle}:</strong></td>
+                                            <td>${news.title}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>${i18n_formCategory}:</strong></td>
                                             <td>${news.categoryId}</td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Tác giả:</strong></td>
+                                            <td><strong>${i18n_tableAuthor}:</strong></td>
                                             <td>${news.author}</td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Ngày đăng:</strong></td>
+                                            <td><strong>${i18n_tablePostedDate}:</strong></td>
                                             <td>
                                                 <fmt:formatDate value="${news.postedDate}" pattern="dd/MM/yyyy HH:mm"/>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Lượt xem:</strong></td>
+                                            <td><strong>${i18n_tableViewCount}:</strong></td>
                                             <td>${news.viewCount}</td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Trang nhất:</strong></td>
+                                            <td><strong>${i18n_tableFeatured}:</strong></td>
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${news.home}">
-                                                        <span class="badge bg-success">Có</span>
+                                                        <span class="badge bg-success">${i18n_actionYes}</span>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <span class="badge bg-secondary">Không</span>
+                                                        <span class="badge bg-secondary">${i18n_actionNo}</span>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
@@ -363,11 +367,11 @@
                                     <div class="d-grid gap-2">
                                         <a href="${baseUrl}/edit?id=${news.id}" 
                                            class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit me-1"></i> Chỉnh sửa
+                                            <i class="fas fa-edit me-1"></i> ${i18n_actionEdit}
                                         </a>
                                         <button onclick="confirmDelete('${news.id}', '${news.title}', '${baseUrl}')" 
                                                 class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash me-1"></i> Xóa
+                                            <i class="fas fa-trash me-1"></i> ${i18n_actionDelete}
                                         </button>
                                     </div>
                                 </div>
@@ -377,7 +381,7 @@
                     
                     <div class="mt-4">
                         <a href="${baseUrl}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                            <i class="fas fa-arrow-left me-1"></i> ${i18n_buttonBack}
                         </a>
                     </div>
                 </c:if>

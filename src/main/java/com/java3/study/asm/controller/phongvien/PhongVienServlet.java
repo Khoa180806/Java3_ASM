@@ -7,6 +7,7 @@ import com.java3.study.asm.dao.impl.NewsDaoImpl;
 import com.java3.study.asm.entity.News;
 import com.java3.study.asm.service.SubscriptionService;
 import com.java3.study.asm.utils.FileUploadUtil;
+import com.java3.study.asm.utils.I18nUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -101,9 +102,12 @@ public class PhongVienServlet extends HttpServlet {
             List<News> newsList = newsDao.selectAll();
             request.setAttribute("newsList", newsList);
             request.setAttribute("action", "list");
-            request.setAttribute("pageTitle", "Quản lý tin tức");
+            request.setAttribute("pageTitle", I18nUtils.getMessage(request, "nav.manage.news"));
             request.setAttribute("contextPath", "phongvien");
             request.setAttribute("categories", categoryDao.selectAll());
+            
+            // Set original URL for language switcher
+            request.setAttribute("originalUrl", request.getContextPath() + "/phongvien");
             
             request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
                    .forward(request, response);
@@ -123,9 +127,12 @@ public class PhongVienServlet extends HttpServlet {
             throws ServletException, IOException {
         
         request.setAttribute("action", "create");
-        request.setAttribute("pageTitle", "Tạo tin tức mới");
+        request.setAttribute("pageTitle", I18nUtils.getMessage(request, "page.create.news"));
         request.setAttribute("contextPath", "phongvien");
         request.setAttribute("categories", categoryDao.selectAll());
+        
+        // Set original URL for language switcher
+        request.setAttribute("originalUrl", request.getContextPath() + "/phongvien/create");
 
         request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
                .forward(request, response);
@@ -155,9 +162,12 @@ public class PhongVienServlet extends HttpServlet {
             
             request.setAttribute("news", news);
             request.setAttribute("action", "edit");
-            request.setAttribute("pageTitle", "Chỉnh sửa tin tức");
+            request.setAttribute("pageTitle", I18nUtils.getMessage(request, "page.edit.news"));
             request.setAttribute("contextPath", "phongvien");
             request.setAttribute("categories", categoryDao.selectAll());
+            
+            // Set original URL for language switcher
+            request.setAttribute("originalUrl", request.getContextPath() + "/phongvien/edit?id=" + newsId);
             
             request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
                    .forward(request, response);
@@ -193,8 +203,11 @@ public class PhongVienServlet extends HttpServlet {
             
             request.setAttribute("news", news);
             request.setAttribute("action", "view");
-            request.setAttribute("pageTitle", "Chi tiết tin tức");
+            request.setAttribute("pageTitle", I18nUtils.getMessage(request, "page.view.news"));
             request.setAttribute("contextPath", "phongvien");
+            
+            // Set original URL for language switcher
+            request.setAttribute("originalUrl", request.getContextPath() + "/phongvien/view?id=" + newsId);
             
             request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
                    .forward(request, response);
@@ -237,7 +250,7 @@ public class PhongVienServlet extends HttpServlet {
                 
                 request.setAttribute("errorMessage", "Vui lòng điền đầy đủ thông tin bắt buộc!");
                 request.setAttribute("action", "create");
-                request.setAttribute("pageTitle", "Tạo tin tức mới");
+                request.setAttribute("pageTitle", I18nUtils.getMessage(request, "page.create.news"));
                 request.setAttribute("contextPath", "phongvien");
                 request.setAttribute("categories", categoryDao.selectAll());
                 request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
@@ -280,7 +293,7 @@ public class PhongVienServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "Số lượt xem phải là số nguyên!");
             request.setAttribute("action", "create");
-            request.setAttribute("pageTitle", "Tạo tin tức mới");
+            request.setAttribute("pageTitle", I18nUtils.getMessage(request, "page.create.news"));
             request.setAttribute("contextPath", "phongvien");
             request.setAttribute("categories", categoryDao.selectAll());
             request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")
@@ -289,7 +302,7 @@ public class PhongVienServlet extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Lỗi khi tạo tin tức: " + e.getMessage());
             request.setAttribute("action", "create");
-            request.setAttribute("pageTitle", "Tạo tin tức mới");
+            request.setAttribute("pageTitle", I18nUtils.getMessage(request, "page.create.news"));
             request.setAttribute("contextPath", "phongvien");
             request.setAttribute("categories", categoryDao.selectAll());
             request.getRequestDispatcher("/views/asm/common/phongvien/layoutphongvien.jsp")

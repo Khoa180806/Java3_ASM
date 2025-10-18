@@ -23,10 +23,10 @@
             <h2 class="h3 mb-0">
                 <i class="fas fa-envelope-open-text text-primary me-2"></i>
                 <c:choose>
-                    <c:when test="${action == 'view'}">Chi tiết Newsletter</c:when>
-                    <c:when test="${action == 'disable'}">Vô hiệu hóa Newsletter</c:when>
-                    <c:when test="${action == 'delete'}">Xóa Newsletter</c:when>
-                    <c:otherwise>Quản lý Newsletter</c:otherwise>
+                    <c:when test="${action == 'view'}">${i18n_newsletterView}</c:when>
+                    <c:when test="${action == 'disable'}">${i18n_actionDelete} Newsletter</c:when>
+                    <c:when test="${action == 'delete'}">${i18n_actionDelete} Newsletter</c:when>
+                    <c:otherwise>${i18n_newsletterManage}</c:otherwise>
                 </c:choose>
             </h2>
             <nav aria-label="breadcrumb">
@@ -61,7 +61,7 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="card-title text-muted mb-1">Tổng Email</h6>
+                                <h6 class="card-title text-muted mb-1">${i18n_newsletterTotal}</h6>
                                 <h4 class="mb-0">${totalEmails}</h4>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="card-title text-muted mb-1">Đang Hoạt Động</h6>
+                                <h6 class="card-title text-muted mb-1">${i18n_newsletterActive}</h6>
                                 <h4 class="mb-0 text-success">${activeEmails}</h4>
                             </div>
                         </div>
@@ -95,7 +95,7 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="card-title text-muted mb-1">Đã Vô Hiệu Hóa</h6>
+                                <h6 class="card-title text-muted mb-1">${i18n_newsletterInactive}</h6>
                                 <h4 class="mb-0 text-warning">${inactiveEmails}</h4>
                             </div>
                         </div>
@@ -145,9 +145,9 @@
                                 <th width="50">
                                     <input type="checkbox" id="selectAll" class="form-check-input">
                                 </th>
-                                <th>Email</th>
-                                <th width="120">Trạng Thái</th>
-                                <th width="150">Thao Tác</th>
+                                <th>${i18n_newsletterEmail}</th>
+                                <th width="120">${i18n_newsletterEnabled}</th>
+                                <th width="150">${i18n_tableActions}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -205,7 +205,7 @@
                                     <tr>
                                         <td colspan="4" class="text-center py-4 text-muted">
                                             <i class="fas fa-inbox fa-2x mb-2"></i>
-                                            <p class="mb-0">Chưa có email nào đăng ký newsletter</p>
+                                            <p class="mb-0">${i18n_emptyNewsletterDescription}</p>
                                         </td>
                                     </tr>
                                 </c:otherwise>
@@ -230,7 +230,7 @@
                                 
                                 <div class="row mb-3">
                                     <div class="col-sm-4">
-                                        <strong>Email:</strong>
+                                        <strong>${i18n_newsletterEmail}:</strong>
                                     </div>
                                     <div class="col-sm-8">
                                         <span class="text-primary fw-medium">${newsletter.email}</span>
@@ -239,13 +239,13 @@
                                 
                                 <div class="row mb-3">
                                     <div class="col-sm-4">
-                                        <strong>Trạng thái:</strong>
+                                        <strong>${i18n_newsletterEnabled}:</strong>
                                     </div>
                                     <div class="col-sm-8">
                                         <c:choose>
                                             <c:when test="${newsletter.enabled}">
                                                 <span class="badge bg-success fs-6">
-                                                    <i class="fas fa-check-circle me-1"></i>Đang hoạt động
+                                                    <i class="fas fa-check-circle me-1"></i>${i18n_newsletterActive}
                                                 </span>
                                             </c:when>
                                             <c:otherwise>
@@ -295,17 +295,17 @@
                         <div class="card border-warning">
                             <div class="card-body">
                                 <div class="mb-3">
-                                    <strong>Email:</strong> 
+                                    <strong>${i18n_newsletterEmail}:</strong> 
                                     <span class="text-primary">${newsletter.email}</span>
                                 </div>
                                 <div class="mb-3">
-                                    <strong>Trạng thái hiện tại:</strong> 
-                                    <span class="badge bg-success">Đang hoạt động</span>
+                                    <strong>${i18n_newsletterEnabled}:</strong> 
+                                    <span class="badge bg-success">${i18n_newsletterActive}</span>
                                 </div>
                                 
                                 <div class="alert alert-warning">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
-                                    Email này sẽ không nhận được newsletter nữa sau khi vô hiệu hóa.
+                                    ${i18n_disableNewsletterWarning}
                                 </div>
                                 
                                 <form method="post" action="${baseUrl}/disable">
