@@ -25,7 +25,7 @@
     <c:set var="headerUser" value="${not empty sessionScope.currentUser ? sessionScope.currentUser : sessionScope.user}" />
     <c:set var="headerUserName" value="${not empty headerUser.fullname ? headerUser.fullname : headerUser}" />
     <c:set var="headerUserId" value="${not empty headerUser.id ? headerUser.id : headerUser}" />
-    <header class="bg-light border-bottom py-3 mb-4 shadow-sm">
+    <header class="bg-light border-bottom py-3 shadow-sm">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
                 <div>

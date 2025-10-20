@@ -163,7 +163,11 @@
                                         ${i18n_formId} <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" id="newsId" name="id" 
-                                           value="${news.id}" ${action == 'edit' ? 'readonly' : ''} required>
+                                           value="${news.id}" ${action == 'edit' ? 'readonly' : ''} required
+                                           minlength="3" maxlength="20"
+                                           oninput="validateNewsId(this)">
+                                    <div class="form-text">ID tin tức (3-20 ký tự)</div>
+                                    <div id="newsIdError" class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -186,14 +190,18 @@
                                 ${i18n_formTitle} <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" id="newsTitle" name="title" 
-                                   value="${news.title}" required>
+                                   value="${news.title}" required minlength="5" maxlength="200"
+                                   oninput="validateNewsTitle(this)">
+                            <div id="newsTitleError" class="invalid-feedback"></div>
                         </div>
                         
                         <div class="mb-3">
                             <label for="newsContent" class="form-label">
                                 ${i18n_formContent} <span class="text-danger">*</span>
                             </label>
-                            <textarea class="form-control" id="newsContent" name="content" rows="8" required>${news.content}</textarea>
+                            <textarea class="form-control" id="newsContent" name="content" rows="8" required
+                                      minlength="10" oninput="validateNewsContent(this)">${news.content}</textarea>
+                            <div id="newsContentError" class="invalid-feedback"></div>
                         </div>
                         
                         <div class="row">

@@ -50,8 +50,13 @@
                                            value="${category.id}" 
                                            ${action == 'edit' ? 'readonly' : ''}
                                            placeholder="Nhập ID danh mục (VD: TECH, SPORT, NEWS...)"
-                                           required>
-                                    <div class="form-text">ID không được thay đổi sau khi tạo</div>
+                                           required
+                                           minlength="2"
+                                           maxlength="20"
+                                           pattern="[A-Z0-9_]+"
+                                           oninput="validateCategoryId(this)">
+                                    <div class="form-text">ID không được thay đổi sau khi tạo. Chỉ chữ IN HOA, số và dấu gạch dưới (_)</div>
+                                    <div id="categoryIdError" class="invalid-feedback"></div>
                                 </div>
                             </div>
                             
@@ -66,7 +71,11 @@
                                            name="categoryName" 
                                            value="${category.name}" 
                                            placeholder="Nhập tên danh mục"
-                                           required>
+                                           required
+                                           minlength="2"
+                                           maxlength="100"
+                                           oninput="validateCategoryName(this)">
+                                    <div id="categoryNameError" class="invalid-feedback"></div>
                                 </div>
                             </div>
                         </div>
@@ -187,20 +196,104 @@
 </div>
 
 <script>
-// Form validation for Category
-function validateCategoryForm() {
-    var id = document.getElementById('categoryId').value.trim();
-    var name = document.getElementById('categoryName').value.trim();
+// Real-time validation for Category ID
+function validateCategoryId(input) {
+    var id = input.value.trim();
+    var errorDiv = document.getElementById('categoryIdError');
+    var isValid = true;
+    var errorMessage = '';
     
-    if (id === '' || name === '') {
-        alert('Vui lòng điền đầy đủ thông tin bắt buộc (ID và Tên danh mục)!');
-        return false;
+    // Check if empty
+    if (id === '') {
+        errorMessage = 'ID danh mục không được để trống!';
+        isValid = false;
+    }
+    // Check length
+    else if (id.length < 2) {
+        errorMessage = 'ID phải có ít nhất 2 ký tự!';
+        isValid = false;
+    }
+    else if (id.length > 20) {
+        errorMessage = 'ID không được quá 20 ký tự!';
+        isValid = false;
+    }
+    // Check format (only uppercase letters, numbers, underscore)
+    else if (!/^[A-Z0-9_]+$/.test(id)) {
+        errorMessage = 'ID chỉ được chứa chữ IN HOA, số và dấu gạch dưới (_)!';
+        isValid = false;
     }
     
-    // Validate ID format (chỉ chứa chữ cái, số và dấu gạch dưới)
-    var idPattern = /^[A-Z0-9_]+$/;
-    if (!idPattern.test(id)) {
-        alert('ID danh mục chỉ được chứa chữ cái in hoa, số và dấu gạch dưới!');
+    // Display error
+    if (!isValid) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        errorDiv.textContent = errorMessage;
+        errorDiv.style.display = 'block';
+    } else {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        errorDiv.textContent = '';
+        errorDiv.style.display = 'none';
+    }
+    
+    return isValid;
+}
+
+// Real-time validation for Category Name
+function validateCategoryName(input) {
+    var name = input.value.trim();
+    var errorDiv = document.getElementById('categoryNameError');
+    var isValid = true;
+    var errorMessage = '';
+    
+    // Check if empty
+    if (name === '') {
+        errorMessage = 'Tên danh mục không được để trống!';
+        isValid = false;
+    }
+    // Check length
+    else if (name.length < 2) {
+        errorMessage = 'Tên danh mục phải có ít nhất 2 ký tự!';
+        isValid = false;
+    }
+    else if (name.length > 100) {
+        errorMessage = 'Tên danh mục không được quá 100 ký tự!';
+        isValid = false;
+    }
+    
+    // Display error
+    if (!isValid) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        errorDiv.textContent = errorMessage;
+        errorDiv.style.display = 'block';
+    } else {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        errorDiv.textContent = '';
+        errorDiv.style.display = 'none';
+    }
+    
+    return isValid;
+}
+
+// Form validation for Category
+function validateCategoryForm() {
+    var idInput = document.getElementById('categoryId');
+    var nameInput = document.getElementById('categoryName');
+    
+    // Validate all fields
+    var idValid = validateCategoryId(idInput);
+    var nameValid = validateCategoryName(nameInput);
+    
+    // If any field is invalid, prevent form submission
+    if (!idValid || !nameValid) {
+        // Focus on first invalid field
+        if (!idValid) {
+            idInput.focus();
+        } else if (!nameValid) {
+            nameInput.focus();
+        }
         return false;
     }
     

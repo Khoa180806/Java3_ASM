@@ -146,15 +146,21 @@
                                 <div class="mb-3">
                                     <label for="userId" class="form-label">ID người dùng <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="userId" name="id" 
-                                           value="${user.id}" ${action == 'edit' ? 'readonly' : ''} required>
-                                    <div class="form-text">Chỉ được chứa chữ cái, số và dấu gạch dưới</div>
+                                           value="${user.id}" ${action == 'edit' ? 'readonly' : ''} required
+                                           minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+"
+                                           oninput="validateUserId(this)">
+                                    <div class="form-text">Chỉ được chứa chữ cái, số và dấu gạch dưới (3-20 ký tự)</div>
+                                    <div id="userIdError" class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="userPassword" class="form-label">${i18n_userPassword} <span class="text-danger">*</span></label>
                                     <input type="password" class="form-control" id="userPassword" name="password" 
-                                           value="${user.password}" required>
+                                           value="${user.password}" required minlength="6" maxlength="50"
+                                           oninput="validateUserPassword(this)">
+                                    <div class="form-text">Mật khẩu phải có ít nhất 6 ký tự</div>
+                                    <div id="userPasswordError" class="invalid-feedback"></div>
                                 </div>
                             </div>
                         </div>
@@ -164,7 +170,9 @@
                                 <div class="mb-3">
                                     <label for="userFullname" class="form-label">${i18n_userFullname} <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="userFullname" name="fullname" 
-                                           value="${user.fullname}" required>
+                                           value="${user.fullname}" required minlength="2" maxlength="100"
+                                           oninput="validateUserFullname(this)">
+                                    <div id="userFullnameError" class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -181,14 +189,19 @@
                                 <div class="mb-3">
                                     <label for="userEmail" class="form-label">${i18n_userEmail} <span class="text-danger">*</span></label>
                                     <input type="email" class="form-control" id="userEmail" name="email" 
-                                           value="${user.email}" required>
+                                           value="${user.email}" required
+                                           oninput="validateUserEmail(this)">
+                                    <div id="userEmailError" class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="userMobile" class="form-label">${i18n_userPhone}</label>
                                     <input type="tel" class="form-control" id="userMobile" name="mobile" 
-                                           value="${user.mobile}">
+                                           value="${user.mobile}" pattern="[0-9]{10,11}"
+                                           oninput="validateUserMobile(this)">
+                                    <div class="form-text">Số điện thoại 10-11 chữ số</div>
+                                    <div id="userMobileError" class="invalid-feedback"></div>
                                 </div>
                             </div>
                         </div>
@@ -200,14 +213,14 @@
                                     <div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="gender" id="genderMale" 
-                                                   value="true" ${user.gender ? 'checked' : ''}>
+                                                   value="true" ${empty user || user.gender == null || user.gender ? 'checked' : ''}>
                                             <label class="form-check-label" for="genderMale">
                                                 <i class="fas fa-mars text-primary"></i> ${i18n_userMale}
                                             </label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="gender" id="genderFemale" 
-                                                   value="false" ${!user.gender && user.gender != null ? 'checked' : ''}>
+                                                   value="false" ${!empty user && user.gender != null && !user.gender ? 'checked' : ''}>
                                             <label class="form-check-label" for="genderFemale">
                                                 <i class="fas fa-venus text-danger"></i> ${i18n_userFemale}
                                             </label>
@@ -221,14 +234,14 @@
                                     <div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="role" id="roleAdmin" 
-                                                   value="true" ${user.role ? 'checked' : ''}>
+                                                   value="true" ${empty user || user.role == null || user.role ? 'checked' : ''}>
                                             <label class="form-check-label" for="roleAdmin">
                                                 <i class="fas fa-crown text-warning"></i> Admin
                                             </label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="role" id="roleReporter" 
-                                                   value="false" ${!user.role && user.role != null ? 'checked' : ''}>
+                                                   value="false" ${!empty user && user.role != null && !user.role ? 'checked' : ''}>
                                             <label class="form-check-label" for="roleReporter">
                                                 <i class="fas fa-pen text-success"></i> Phóng viên
                                             </label>

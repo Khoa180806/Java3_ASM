@@ -162,29 +162,197 @@
             });
         }, 5000);
         
+        // Real-time validation for User ID
+        function validateUserId(input) {
+            var id = input.value.trim();
+            var errorDiv = document.getElementById('userIdError');
+            var isValid = true;
+            var errorMessage = '';
+            
+            if (id === '') {
+                errorMessage = 'ID người dùng không được để trống!';
+                isValid = false;
+            } else if (id.length < 3) {
+                errorMessage = 'ID phải có ít nhất 3 ký tự!';
+                isValid = false;
+            } else if (id.length > 20) {
+                errorMessage = 'ID không được quá 20 ký tự!';
+                isValid = false;
+            } else if (!/^[a-zA-Z0-9_]+$/.test(id)) {
+                errorMessage = 'ID chỉ được chứa chữ cái, số và dấu gạch dưới!';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
+        // Real-time validation for Password
+        function validateUserPassword(input) {
+            var password = input.value;
+            var errorDiv = document.getElementById('userPasswordError');
+            var isValid = true;
+            var errorMessage = '';
+            
+            if (password === '') {
+                errorMessage = 'Mật khẩu không được để trống!';
+                isValid = false;
+            } else if (password.length < 6) {
+                errorMessage = 'Mật khẩu phải có ít nhất 6 ký tự!';
+                isValid = false;
+            } else if (password.length > 50) {
+                errorMessage = 'Mật khẩu không được quá 50 ký tự!';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
+        // Real-time validation for Fullname
+        function validateUserFullname(input) {
+            var fullname = input.value.trim();
+            var errorDiv = document.getElementById('userFullnameError');
+            var isValid = true;
+            var errorMessage = '';
+            
+            if (fullname === '') {
+                errorMessage = 'Họ tên không được để trống!';
+                isValid = false;
+            } else if (fullname.length < 2) {
+                errorMessage = 'Họ tên phải có ít nhất 2 ký tự!';
+                isValid = false;
+            } else if (fullname.length > 100) {
+                errorMessage = 'Họ tên không được quá 100 ký tự!';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
+        // Real-time validation for Email
+        function validateUserEmail(input) {
+            var email = input.value.trim();
+            var errorDiv = document.getElementById('userEmailError');
+            var isValid = true;
+            var errorMessage = '';
+            
+            if (email === '') {
+                errorMessage = 'Email không được để trống!';
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errorMessage = 'Định dạng email không hợp lệ!';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
+        // Real-time validation for Mobile
+        function validateUserMobile(input) {
+            var mobile = input.value.trim();
+            var errorDiv = document.getElementById('userMobileError');
+            var isValid = true;
+            var errorMessage = '';
+            
+            // Mobile is optional, only validate if not empty
+            if (mobile !== '') {
+                if (!/^[0-9]{10,11}$/.test(mobile)) {
+                    errorMessage = 'Số điện thoại phải có 10-11 chữ số!';
+                    isValid = false;
+                }
+            }
+            
+            if (!isValid) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
         // Form validation
         function validateUserForm() {
-            var id = document.getElementById('userId').value.trim();
-            var password = document.getElementById('userPassword').value.trim();
-            var fullname = document.getElementById('userFullname').value.trim();
-            var email = document.getElementById('userEmail').value.trim();
+            var idInput = document.getElementById('userId');
+            var passwordInput = document.getElementById('userPassword');
+            var fullnameInput = document.getElementById('userFullname');
+            var emailInput = document.getElementById('userEmail');
+            var mobileInput = document.getElementById('userMobile');
             
-            if (id === '' || password === '' || fullname === '' || email === '') {
-                alert('Vui lòng điền đầy đủ thông tin bắt buộc (ID, Mật khẩu, Họ tên, Email)!');
-                return false;
-            }
+            // Validate all fields
+            var idValid = validateUserId(idInput);
+            var passwordValid = validateUserPassword(passwordInput);
+            var fullnameValid = validateUserFullname(fullnameInput);
+            var emailValid = validateUserEmail(emailInput);
+            var mobileValid = validateUserMobile(mobileInput);
             
-            // Validate email format
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert('Định dạng email không hợp lệ!');
-                return false;
-            }
-            
-            // Validate ID format (only letters, numbers, underscore)
-            var idRegex = /^[a-zA-Z0-9_]+$/;
-            if (!idRegex.test(id)) {
-                alert('ID chỉ được chứa chữ cái, số và dấu gạch dưới!');
+            // If any required field is invalid, prevent form submission
+            if (!idValid || !passwordValid || !fullnameValid || !emailValid || !mobileValid) {
+                // Focus on first invalid field
+                if (!idValid) {
+                    idInput.focus();
+                } else if (!passwordValid) {
+                    passwordInput.focus();
+                } else if (!fullnameValid) {
+                    fullnameInput.focus();
+                } else if (!emailValid) {
+                    emailInput.focus();
+                } else if (!mobileValid) {
+                    mobileInput.focus();
+                }
                 return false;
             }
             

@@ -140,14 +140,123 @@
             });
         }, 5000);
         
+        // Real-time validation for News ID
+        function validateNewsId(input) {
+            var id = input.value.trim();
+            var errorDiv = document.getElementById('newsIdError');
+            var isValid = true;
+            var errorMessage = '';
+            
+            if (id === '') {
+                errorMessage = 'ID tin tức không được để trống!';
+                isValid = false;
+            } else if (id.length < 3) {
+                errorMessage = 'ID phải có ít nhất 3 ký tự!';
+                isValid = false;
+            } else if (id.length > 20) {
+                errorMessage = 'ID không được quá 20 ký tự!';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
+        // Real-time validation for News Title
+        function validateNewsTitle(input) {
+            var title = input.value.trim();
+            var errorDiv = document.getElementById('newsTitleError');
+            var isValid = true;
+            var errorMessage = '';
+            
+            if (title === '') {
+                errorMessage = 'Tiêu đề không được để trống!';
+                isValid = false;
+            } else if (title.length < 5) {
+                errorMessage = 'Tiêu đề phải có ít nhất 5 ký tự!';
+                isValid = false;
+            } else if (title.length > 200) {
+                errorMessage = 'Tiêu đề không được quá 200 ký tự!';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
+        // Real-time validation for News Content
+        function validateNewsContent(input) {
+            var content = input.value.trim();
+            var errorDiv = document.getElementById('newsContentError');
+            var isValid = true;
+            var errorMessage = '';
+            
+            if (content === '') {
+                errorMessage = 'Nội dung không được để trống!';
+                isValid = false;
+            } else if (content.length < 10) {
+                errorMessage = 'Nội dung phải có ít nhất 10 ký tự!';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
         // Form validation
         function validateForm() {
-            var id = document.getElementById('newsId').value.trim();
-            var title = document.getElementById('newsTitle').value.trim();
-            var content = document.getElementById('newsContent').value.trim();
+            var idInput = document.getElementById('newsId');
+            var titleInput = document.getElementById('newsTitle');
+            var contentInput = document.getElementById('newsContent');
             
-            if (id === '' || title === '' || content === '') {
-                alert('Vui lòng điền đầy đủ thông tin bắt buộc (ID, Tiêu đề, Nội dung)!');
+            // Validate all fields
+            var idValid = validateNewsId(idInput);
+            var titleValid = validateNewsTitle(titleInput);
+            var contentValid = validateNewsContent(contentInput);
+            
+            // If any field is invalid, prevent form submission
+            if (!idValid || !titleValid || !contentValid) {
+                // Focus on first invalid field
+                if (!idValid) {
+                    idInput.focus();
+                } else if (!titleValid) {
+                    titleInput.focus();
+                } else if (!contentValid) {
+                    contentInput.focus();
+                }
                 return false;
             }
             
