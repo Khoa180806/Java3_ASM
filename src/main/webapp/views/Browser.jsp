@@ -207,6 +207,14 @@
                 <a class="btn" href="/logintintuc">Đăng nhập</a>
             </div>
         </div>
+
+        <div class="card">
+            <h3>Bài bảo vệ</h3>
+            <p>Quản lý khách hàng.</p>
+            <div class="links">
+                <a class="btn" href="/khachhang">Quản lý khách hàng</a>
+            </div>
+        </div>
     </div>
 
     <footer>
